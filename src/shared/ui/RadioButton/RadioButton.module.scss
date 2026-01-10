@@ -1,0 +1,17 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radio {
+  margin: 0;
+  cursor: pointer;
+}
+
+.label {
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: inherit;
+  user-select: none;
+}

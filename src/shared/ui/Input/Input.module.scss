@@ -1,0 +1,31 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  display: block;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.input {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  width: 100%;
+}
+
+.error {
+  // Error styles will be added later
+}
+
+.errorMessage {
+  font-size: inherit;
+  // Error message styles will be added later
+}
