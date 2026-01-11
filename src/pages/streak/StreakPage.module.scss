@@ -1,0 +1,275 @@
+.page {
+  min-height: 100vh;
+  padding: 16px;
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+// Градиентные фоны для разных уровней
+.pageLevel1 {
+  background: linear-gradient(180deg, #FFE5CC 0%, #FFF4E6 100%);
+}
+
+.pageLevel2 {
+  background: linear-gradient(180deg, #FFD9B3 0%, #FFE5CC 100%);
+}
+
+.pageLevel3 {
+  background: linear-gradient(180deg, #FFCC99 0%, #FFD9B3 100%);
+}
+
+.pageLevel4 {
+  background: linear-gradient(180deg, #FFBF80 0%, #FFCC99 100%);
+}
+
+.pageLevel5 {
+  background: linear-gradient(180deg, #FFB266 0%, #FFBF80 100%);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.streakCounter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.streakLabel {
+  color: var(--text-main, #000000);
+  font-size: 14px;
+}
+
+.streakNumber {
+  color: var(--text-main, #000000);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--blue-900, #358BED);
+  }
+}
+
+.avatars {
+  display: flex;
+  gap: -8px;
+  align-items: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--background-default, #FFFFFF);
+  object-fit: cover;
+  
+  &:not(:first-child) {
+    margin-left: -12px;
+  }
+}
+
+.petSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.petImageContainer {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.petImage {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.petNavArrow {
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: var(--text-main, #000000);
+  cursor: pointer;
+}
+
+.petNameContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.petName {
+  color: var(--text-main, #000000);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.editIcon {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  opacity: 0.6;
+  
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.progressSection {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.progressDescription {
+  text-align: center;
+  color: var(--text-ter, #878787);
+  font-size: 14px;
+}
+
+.tasksCard {
+  background: var(--background-default, #FFFFFF);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: auto;
+}
+
+.tasksTitle {
+  color: var(--text-main, #000000);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.tasksList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.taskItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.taskIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  &.completed {
+    background: var(--orange-100, #FDEEDF);
+    
+    svg {
+      color: var(--orange-900, #FB8A0E);
+    }
+  }
+  
+  &.incomplete {
+    background: var(--surface-default, #F2F2F2);
+    
+    svg {
+      color: var(--text-ter, #878787);
+    }
+  }
+}
+
+.taskContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.taskText {
+  color: var(--text-main, #000000);
+  font-size: 16px;
+  flex: 1;
+}
+
+.taskPoints {
+  color: #4CAF50;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.taskMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.taskCounter {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface-default, #F2F2F2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-ter, #878787);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.taskAvatars {
+  display: flex;
+  gap: -8px;
+  align-items: center;
+}
+
+.taskAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--background-default, #FFFFFF);
+  object-fit: cover;
+  
+  &:not(:first-child) {
+    margin-left: -8px;
+  }
+}
+
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 16px;
+}

@@ -1,25 +1,37 @@
-import { forwardRef } from 'react';
-import type { ButtonHTMLAttributes } from 'react';
-import styles from './Button.module.scss';
+import { forwardRef } from "react";
+import type { ButtonHTMLAttributes } from "react";
+import styles from "./Button.module.scss";
+import { Typography } from "../Typography/Typography";
+
+export type ButtonVariant = "main" | "secondary";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary';
-  fullWidth?: boolean;
+  variant?: ButtonVariant;
+  disabled?: boolean;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', fullWidth = false, className = '', ...props }, ref) => {
+  ({ variant = "main", disabled = false, className = "", ...props }, ref) => {
     const classNames = [
       styles.button,
       styles[variant],
-      fullWidth ? styles.fullWidth : '',
+      disabled ? styles.disabled : "",
       className,
     ]
       .filter(Boolean)
-      .join(' ');
+      .join(" ");
 
-    return <button ref={ref} className={classNames} {...props} />;
+    return (
+      <Typography
+        as="button"
+        variant="titleThirdBold"
+        ref={ref}
+        className={classNames}
+        disabled={disabled}
+        {...props}
+      />
+    );
   }
 );
 
-Button.displayName = 'Button';
+Button.displayName = "Button";

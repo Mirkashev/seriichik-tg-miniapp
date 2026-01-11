@@ -4,10 +4,12 @@ export interface PartnerResponseDTO {
   toUserFirstName?: string;
   toUserLastName?: string;
   toUserUsername?: string;
+  toUserPhotoUrl?: string; // URL фотографии пользователя из Telegram
   pet?: {
     id: string;
     level: number;
     exp: number;
+    name?: string; // Имя питомца
   };
   streakCount: number;
   isApplied: boolean;
@@ -23,10 +25,12 @@ export interface Partner {
   toUserFirstName?: string;
   toUserLastName?: string;
   toUserUsername?: string;
+  toUserPhotoUrl?: string; // URL фотографии пользователя из Telegram
   pet?: {
     id: string;
     level: number;
     exp: number;
+    name?: string; // Имя питомца
   };
   streakCount: number;
   isApplied: boolean;
@@ -34,10 +38,12 @@ export interface Partner {
 
 export const mapPartnerFromDTO = (dto: PartnerResponseDTO): Partner => ({
   chatId: dto.chatId,
-  toUserId: typeof dto.toUserId === 'string' ? Number(dto.toUserId) : dto.toUserId,
+  toUserId:
+    typeof dto.toUserId === "string" ? Number(dto.toUserId) : dto.toUserId,
   toUserFirstName: dto.toUserFirstName,
   toUserLastName: dto.toUserLastName,
   toUserUsername: dto.toUserUsername,
+  toUserPhotoUrl: dto.toUserPhotoUrl,
   pet: dto.pet,
   streakCount: dto.streakCount,
   isApplied: dto.isApplied,

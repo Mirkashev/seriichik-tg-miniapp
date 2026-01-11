@@ -1,24 +1,41 @@
 .button {
-  padding: 0;
-  margin: 0;
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 12px;
   border: none;
-  background: none;
   cursor: pointer;
   font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
   text-align: center;
-  display: inline-block;
 }
 
-.fullWidth {
-  width: 100%;
+.main {
+  background-color: var(--action-default);
+  color: var(--text-on);
 }
 
-.primary {
-  // Styles will be added later
+.main:active:not(:disabled) {
+  background-color: var(--action-pressed);
+}
+
+.main:disabled {
+  background-color: var(--action-pressed);
+  cursor: not-allowed;
 }
 
 .secondary {
-  // Styles will be added later
+  background-color: transparent;
+  color: var(--text-second);
+}
+
+.secondary:active:not(:disabled) {
+  background-color: var(--surface-default);
+}
+
+.secondary:disabled {
+  background-color: var(--surface-default);
+  cursor: not-allowed;
+}
+
+.disabled {
+  cursor: not-allowed;
 }

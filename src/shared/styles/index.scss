@@ -1,0 +1,18 @@
+@import "./colors.scss";
+@import "./reset.scss";
+
+:root {
+  font-family:
+    "SF Pro",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+}

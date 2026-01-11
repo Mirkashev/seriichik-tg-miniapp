@@ -1,14 +1,17 @@
-import { forwardRef } from 'react';
-import type { InputHTMLAttributes } from 'react';
-import styles from './RadioButton.module.scss';
+import { forwardRef } from "react";
+import type { InputHTMLAttributes } from "react";
+import styles from "./RadioButton.module.scss";
 
-export interface RadioButtonProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface RadioButtonProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type"
+> {
   label?: string;
 }
 
 export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
-  ({ label, className = '', id, ...props }, ref) => {
-    const radioId = id || `radio-${Math.random().toString(36).substr(2, 9)}`;
+  ({ label, className = "", id, ...props }, ref) => {
+    const radioId = id || `radio-${crypto.randomUUID().substring(0, 9)}`;
 
     return (
       <div className={styles.wrapper}>
@@ -29,4 +32,4 @@ export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
   }
 );
 
-RadioButton.displayName = 'RadioButton';
+RadioButton.displayName = "RadioButton";
