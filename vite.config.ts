@@ -7,7 +7,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "seriichik-tg-miniapp",
+  base: "/seriichik-tg-miniapp/",
   server: {
     // @ts-expect-error - vite-plugin-mkcert handles https: true
     https: true, // Включает HTTPS
