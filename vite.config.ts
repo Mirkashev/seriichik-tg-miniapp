@@ -8,7 +8,8 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.VITE_IS_PROD ? "/seriichik-tg-miniapp/" : "/",
+  // TODO: change to process.env.VITE_IS_PROD ? "/seriichik-tg-miniapp/" : "/"
+  base: "/seriichik-tg-miniapp/",
   server: {
     // @ts-expect-error - vite-plugin-mkcert handles https: true
     https: true, // Включает HTTPS
