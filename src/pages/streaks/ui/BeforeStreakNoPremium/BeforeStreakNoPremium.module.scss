@@ -1,0 +1,54 @@
+.page {
+  background-color: #fff9e6;
+  padding: 65px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.character {
+  width: 286px;
+  height: 328px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyStateContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.emptyStateTitle {
+  color: var(--text-main);
+  margin: 0;
+}
+
+.emptyStateText {
+  color: var(--text-second);
+  margin: 0;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.inviteButton {
+  margin-top: 8px;
+  background-color: var(--action-default);
+  opacity: 0.9;
+}
+
+.inviteButton:hover {
+  opacity: 1;
+}

@@ -4,11 +4,11 @@ import { usePet, QuestType, type Quest } from "@/entities/pet";
 import { ProgressBar } from "@/shared/ui/ProgressBar";
 import { Typography } from "@/shared/ui/Typography";
 import { getAvatarFallback } from "@/shared/utils/telegramPhoto";
-import petLevel1 from "@/assets/pets/1.png";
-import petLevel2 from "@/assets/pets/2.png";
-import petLevel3 from "@/assets/pets/3.png";
-import petLevel4 from "@/assets/pets/4.png";
-import petLevel5 from "@/assets/pets/5.png";
+import petLevel1 from "@/assets/images/pets/1.png";
+import petLevel2 from "@/assets/images/pets/2.png";
+import petLevel3 from "@/assets/images/pets/3.png";
+import petLevel4 from "@/assets/images/pets/4.png";
+import petLevel5 from "@/assets/images/pets/5.png";
 import styles from "./StreakPage.module.scss";
 
 interface Task {

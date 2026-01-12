@@ -17,5 +17,7 @@ export const router = createBrowserRouter(
       element: <StreaksPage />,
     },
   ],
-  { basename: "/seriichik-tg-miniapp" }
+  import.meta.env.VITE_IS_PROD
+    ? { basename: "/seriichik-tg-miniapp" }
+    : undefined
 );

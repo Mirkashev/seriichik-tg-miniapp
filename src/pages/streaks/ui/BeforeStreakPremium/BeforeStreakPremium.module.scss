@@ -1,0 +1,161 @@
+.page {
+  background-color: #fff9e6;
+  padding: 20px 16px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+.guideTitle {
+  color: var(--text-main);
+  margin: 0;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.premiumGuide {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepCard {
+  background-color: var(--background-default);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stepNumber {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background-color: var(--surface-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-ter);
+}
+
+.stepContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.stepText {
+  color: var(--text-main);
+  margin: 0;
+}
+
+.stepButton {
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.stepButtonBlue {
+  background-color: var(--blue-50);
+}
+
+.stepButtonGray {
+  background-color: #2c2c2e;
+  color: var(--text-on);
+}
+
+.stepButtonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.stepButtonIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepButtonIconBlue {
+  background-color: var(--purple-900);
+  color: white;
+}
+
+.stepButtonIconGray {
+  background-color: var(--blue-900);
+  color: white;
+}
+
+.stepButtonText {
+  flex: 1;
+  text-align: left;
+}
+
+.stepButtonSubtext {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.stepButtonGray .stepButtonSubtext {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.stepButtonGray .stepButtonArrow {
+  color: var(--text-on);
+}
+
+.stepButtonArrow {
+  color: var(--text-second);
+  font-size: 18px;
+}
+
+.botInput {
+  background-color: var(--surface-default);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  width: 100%;
+}
+
+.botUsername {
+  color: var(--text-main);
+}
+
+.copyIcon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: var(--text-second);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 20px;
+}
+
+.videoLink {
+  text-align: center;
+  color: var(--text-second);
+  text-decoration: none;
+  cursor: pointer;
+}

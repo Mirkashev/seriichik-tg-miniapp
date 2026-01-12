@@ -3,11 +3,12 @@ import react from "@vitejs/plugin-react";
 import mkcert from "vite-plugin-mkcert";
 // @ts-expect-error - vite-plugin-eruda has typing issues with exports
 import eruda from "vite-plugin-eruda";
+import svgr from "vite-plugin-svgr";
 import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/seriichik-tg-miniapp/",
+  base: process.env.VITE_IS_PROD ? "/seriichik-tg-miniapp/" : "/",
   server: {
     // @ts-expect-error - vite-plugin-mkcert handles https: true
     https: true, // Включает HTTPS
@@ -17,6 +18,7 @@ export default defineConfig({
     react(),
     mkcert(),
     eruda(), // Инициализирует Eruda для отладки в мини-аппе
+    svgr({ include: "**/*.svg?svgr" }),
   ],
   resolve: {
     alias: {

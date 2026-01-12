@@ -4,6 +4,14 @@ interface ImportMetaEnv {
   readonly VITE_API_URL: string;
 }
 
+declare module "*.svg?svgr" {
+  import React from "react";
+  const ReactComponent: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement>
+  >;
+  export default ReactComponent;
+}
+
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
