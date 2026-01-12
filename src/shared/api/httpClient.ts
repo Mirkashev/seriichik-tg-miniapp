@@ -1,15 +1,19 @@
-import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
-import { retrieveRawInitData } from '@tma.js/sdk';
+import axios from "axios";
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+} from "axios";
+import { retrieveRawInitData } from "@tma.js/sdk";
 
 class HttpClient {
   private client: AxiosInstance;
 
-  constructor(baseURL?: string) {
+  constructor() {
     this.client = axios.create({
-      baseURL: baseURL || '/api',
+      baseURL: import.meta.env.VITE_API_BASE_URL + "/api",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -32,12 +36,20 @@ class HttpClient {
     return response.data;
   }
 
-  async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+  async post<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await this.client.post<T>(url, data, config);
     return response.data;
   }
 
-  async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+  async put<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await this.client.put<T>(url, data, config);
     return response.data;
   }
