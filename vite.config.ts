@@ -6,18 +6,16 @@ import eruda from "vite-plugin-eruda";
 import svgr from "vite-plugin-svgr";
 import path from "path";
 
-// @ts-expect-error - vite-plugin-eruda has typing issues with exports
 export default defineConfig(({ command }) => {
   if (command === "serve") {
     return {
       server: {
-        // https: true,
-        // host: "localhost",
-        allowedHosts: ["9966a0534464.ngrok-free.app"],
+        host: "localhost",
+        // allowedHosts: ["9966a0534464.ngrok-free.app"],
       },
       plugins: [
         react(),
-        // mkcert(),
+        mkcert(),
         eruda(), // Инициализирует Eruda для отладки в мини-аппе
         svgr({ include: "**/*.svg?svgr" }),
       ],
@@ -28,10 +26,9 @@ export default defineConfig(({ command }) => {
       },
     };
   } else {
-    // Production config (vite build)
     return {
       base: "/seriichik-tg-miniapp/",
-      plugins: [react(), mkcert(), svgr({ include: "**/*.svg?svgr" })],
+      plugins: [react(), svgr({ include: "**/*.svg?svgr" })],
       resolve: {
         alias: {
           "@": path.resolve(__dirname, "./src"),
