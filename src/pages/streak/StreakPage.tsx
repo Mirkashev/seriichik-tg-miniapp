@@ -1,15 +1,15 @@
-import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { usePet, QuestType, type Quest } from "@/entities/pet";
-import { ProgressBar } from "@/shared/ui/ProgressBar";
 import { Typography } from "@/shared/ui/Typography";
+import { Loader } from "@/shared/ui/Loader";
 import { getAvatarFallback } from "@/shared/utils/telegramPhoto";
-import petLevel1 from "@/assets/images/pets/1.png";
-import petLevel2 from "@/assets/images/pets/2.png";
-import petLevel3 from "@/assets/images/pets/3.png";
-import petLevel4 from "@/assets/images/pets/4.png";
-import petLevel5 from "@/assets/images/pets/5.png";
+import { PetSection } from "./ui/PetSection";
+import { getPetImage } from "./utils/getPetImage";
 import styles from "./StreakPage.module.scss";
+import { postEvent, backButton } from "@tma.js/sdk-react";
+import { isIOS } from "react-device-detect";
+import CheckMark from "@/assets/icons/check-mark.svg?svgr";
 
 interface Task {
   id: string;
@@ -70,26 +70,10 @@ const getQuestTarget = (type: QuestType): number => {
   }
 };
 
-const getPetImage = (level: number): string => {
-  const petImages: Record<number, string> = {
-    1: petLevel1,
-    2: petLevel2,
-    3: petLevel3,
-    4: petLevel4,
-    5: petLevel5,
-  };
-
-  // Если уровень больше 5, используем изображение уровня 5
-  const imageLevel = Math.min(level, 5);
-  // Если уровень меньше 1, используем изображение уровня 1
-  const finalLevel = Math.max(imageLevel, 1);
-
-  return petImages[finalLevel] || petLevel1;
-};
-
 export const StreakPage = () => {
   const { chatId } = useParams<{ chatId: string }>();
   const { data: pet, isLoading, error } = usePet(chatId || "");
+  const navigate = useNavigate();
 
   // Получаем аватары из данных пета
   const avatars = useMemo(() => {
@@ -172,19 +156,20 @@ export const StreakPage = () => {
     });
   }, [pet]);
 
-  // Получаем класс для фона в зависимости от уровня
-  const getBackgroundClass = (level: number) => {
-    if (level >= 5) return styles.pageLevel5;
-    if (level >= 4) return styles.pageLevel4;
-    if (level >= 3) return styles.pageLevel3;
-    if (level >= 2) return styles.pageLevel2;
-    return styles.pageLevel1;
-  };
+  useEffect(() => {
+    postEvent("web_app_set_background_color", { color: "#f8f8f8" });
+    postEvent("web_app_set_header_color", { color: "#ffd179" });
+    backButton.mount();
+    backButton.show();
+    backButton.onClick(() => {
+      navigate("/streaks");
+    });
+  }, [navigate, pet]);
 
   if (isLoading) {
     return (
       <div className={styles.loading}>
-        <Typography variant="titleFirstBold">Загрузка...</Typography>
+        <Loader />
       </div>
     );
   }
@@ -217,14 +202,16 @@ export const StreakPage = () => {
   const petImageUrl = getPetImage(pet.level);
 
   return (
-    <div className={`${styles.page} ${getBackgroundClass(pet.level)}`}>
+    <div className={styles.page} style={{ paddingTop: isIOS ? "100px" : 0 }}>
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.streakCounter}>
-          <Typography variant="body" className={styles.streakLabel}>
+          <Typography variant="titleThird" className={styles.streakLabel}>
             Дней стрика
           </Typography>
-          <div className={styles.streakNumber}>{pet.streakCount}</div>
+          <Typography variant="largeTitleBold" className={styles.streakNumber}>
+            {pet.streakCount}
+          </Typography>
         </div>
         <div className={styles.avatars}>
           {avatars.map((avatar, index) => (
@@ -239,53 +226,13 @@ export const StreakPage = () => {
       </div>
 
       {/* Pet Section */}
-      <div className={styles.petSection}>
-        <div className={styles.petImageContainer}>
-          <img src={petImageUrl} alt="Pet" className={styles.petImage} />
-          <span className={styles.petNavArrow}>›</span>
-        </div>
-        <div className={styles.petNameContainer}>
-          <Typography
-            variant="titleFirstBold"
-            className={styles.petName}
-            as="span"
-          >
-            {petName}
-          </Typography>
-          <svg
-            className={styles.editIcon}
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M11.3333 2.00001C11.5084 1.82491 11.7163 1.68698 11.9444 1.59427C12.1726 1.50156 12.4163 1.45605 12.662 1.46068C12.9077 1.46531 13.1498 1.52 13.3733 1.62134C13.5968 1.72268 13.7974 1.86856 13.9627 2.05001C14.128 2.23146 14.2547 2.44489 14.3359 2.6769C14.4171 2.90891 14.4511 3.15487 14.4356 3.39968C14.4201 3.64449 14.3554 3.8834 14.2453 4.10168C14.1352 4.31996 13.982 4.5134 13.7933 4.67001L5.12667 13.3333L1.33333 14.6667L2.66667 10.8733L11.3333 2.00001Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-        <div className={styles.progressSection}>
-          <ProgressBar
-            value={progressValue}
-            max={progressMax}
-            showLabel
-            labelPosition="inside"
-            color="#FB8A0E"
-            striped
-          />
-          <Typography
-            variant="captionFirst"
-            className={styles.progressDescription}
-          >
-            {remainingPoints} очков до нового облика
-          </Typography>
-        </div>
-      </div>
+      <PetSection
+        petName={petName}
+        petImageUrl={petImageUrl}
+        progressValue={progressValue}
+        progressMax={progressMax}
+        remainingPoints={remainingPoints}
+      />
 
       {/* Tasks Card */}
       <div className={styles.tasksCard}>
@@ -295,53 +242,23 @@ export const StreakPage = () => {
         <ul className={styles.tasksList}>
           {tasks.map((task) => (
             <li key={task.id} className={styles.taskItem}>
-              <div
-                className={`${styles.taskIcon} ${
-                  task.completed ? styles.completed : styles.incomplete
-                }`}
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M13.3333 4L6 11.3333L2.66667 8"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
+              <CheckMark
+                width={42}
+                height={42}
+                className={`${styles.taskIcon} ${task.completed ? styles.completed : styles.incomplete}`}
+              />
               <div className={styles.taskContent}>
-                <Typography variant="body" className={styles.taskText}>
+                <Typography
+                  variant="titleThirdBold"
+                  className={styles.taskText}
+                >
                   {task.text}
                 </Typography>
-                <div className={styles.taskMeta}>
-                  {task.counter !== undefined && (
-                    <div className={styles.taskCounter}>{task.counter}</div>
-                  )}
-                  {task.avatars && (
-                    <div className={styles.taskAvatars}>
-                      {task.avatars.map((avatar, index) => (
-                        <img
-                          key={index}
-                          src={avatar}
-                          alt={`Task avatar ${index + 1}`}
-                          className={styles.taskAvatar}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <Typography
-                  variant="captionFirst"
-                  className={styles.taskPoints}
-                >
-                  +{task.points} growth point
+                <Typography variant="titleThird" className={styles.taskPoints}>
+                  <span className={styles.taskPointsNumber}>
+                    +{task.points}
+                  </span>{" "}
+                  exp
                 </Typography>
               </div>
             </li>

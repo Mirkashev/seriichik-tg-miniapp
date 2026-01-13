@@ -6,9 +6,7 @@ interface ImportMetaEnv {
 
 declare module "*.svg?svgr" {
   import React from "react";
-  const ReactComponent: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement>
-  >;
+  const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   export default ReactComponent;
 }
 

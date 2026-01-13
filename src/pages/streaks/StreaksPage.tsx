@@ -1,20 +1,39 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLaunchParams, shareURL, openLink } from "@tma.js/sdk-react";
+import {
+  useLaunchParams,
+  shareURL,
+  postEvent,
+  backButton,
+} from "@tma.js/sdk-react";
 import { usePartners } from "@/entities/partner";
 import type { Partner } from "@/entities/partner";
 import { Button } from "@/shared/ui/Button";
 import { Typography } from "@/shared/ui/Typography";
+import { Loader } from "@/shared/ui/Loader";
 import { getAvatarFallback } from "@/shared/utils/telegramPhoto";
 import { BeforeStreakPremium } from "./ui/BeforeStreakPremium";
 import { BeforeStreakNoPremium } from "./ui/BeforeStreakNoPremium";
+import HelpIcon from "@/assets/icons/question.svg?svgr";
 import styles from "./StreaksPage.module.scss";
+import { Input } from "@/shared/ui/Input";
+import { useDebounce } from "@/shared/utils/hooks/useDebounce";
+import SearchIcon from "@/assets/icons/search.svg?svgr";
+import ChevronRightIcon from "@/assets/icons/chevron-right.svg?svgr";
+import { isIOS } from "react-device-detect";
 
 export const StreaksPage = () => {
   const navigate = useNavigate();
   const launchParams = useLaunchParams(true);
   const user = launchParams.tgWebAppData?.user;
   const userId = user?.id;
+
+  console.log(isIOS);
+
+  // TODO: add search to backend
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
+  console.log(debouncedSearch);
 
   const [showState, setShowState] = useState<
     "before-streak-premium" | "before-streak-no-premium" | "streaks" | null
@@ -66,8 +85,9 @@ export const StreaksPage = () => {
     if (partner.pet?.name) {
       return partner.pet.name;
     }
-    if (partner.streakCount === 0) {
-      return "Восстановите свою 3 дневную серию";
+
+    if (partner.streakCount < 3) {
+      return "Пет появится на 3-ий день";
     }
     // Можно добавить другие статусы
     return "";
@@ -77,23 +97,51 @@ export const StreaksPage = () => {
     navigator.clipboard.writeText("@serichikbot");
   };
 
-  const handleGoToSettings = () => {
-    openLink("https://telegram.org/settings");
-  };
-
   const handleInviteFriend = () => {
-    shareURL("t.me", "Привет! Давай заведем серийчика!");
+    const text = "Привет! Давай заведем серийчика!";
+    const botUrl = "@testMirkBot";
+
+    // TODO: проверить работу на винде, возможно там будет работать нативно
+    const isDesktop =
+      /Mac|Windows|Linux/.test(navigator.platform) ||
+      (navigator.userAgent.includes("Mac") &&
+        !navigator.userAgent.includes("Mobile"));
+
+    if (isDesktop) {
+      // На десктопе открываем share ссылку в новом окне браузера
+      const encodedText = encodeURIComponent(text);
+      const encodedUrl = encodeURIComponent(
+        `https://t.me/${botUrl.replace("@", "")}`
+      );
+      const shareLink = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+
+      // Открываем в новом окне браузера
+      window.open(shareLink, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    // На мобильных устройствах используем shareURL из SDK
+    shareURL(botUrl, text);
   };
 
   const handleVideoInstructions = () => {
     // TODO: Implement video instructions
   };
 
+  useEffect(() => {
+    if (partners.length > 0) {
+      postEvent("web_app_set_background_color", { color: "#ffffff" });
+      postEvent("web_app_set_header_color", { color: "#ffffff" });
+      backButton.mount();
+      backButton.hide();
+    }
+  }, [partners]);
+
   // Loading state
   if (isLoading) {
     return (
       <div className={styles.page}>
-        <Typography variant="titleFirstBold">Загрузка...</Typography>
+        <Loader />
       </div>
     );
   }
@@ -112,7 +160,6 @@ export const StreaksPage = () => {
     if (isPremium) {
       return (
         <BeforeStreakPremium
-          onGoToSettings={handleGoToSettings}
           onCopyBotUsername={handleCopyBotUsername}
           onVideoInstructions={handleVideoInstructions}
           onSwitchToNoPremium={() => setShowState("before-streak-no-premium")}
@@ -134,7 +181,6 @@ export const StreaksPage = () => {
   if (showState === "before-streak-premium") {
     return (
       <BeforeStreakPremium
-        onGoToSettings={handleGoToSettings}
         onCopyBotUsername={handleCopyBotUsername}
         onVideoInstructions={handleVideoInstructions}
         onSwitchToNoPremium={() => setShowState("before-streak-no-premium")}
@@ -155,7 +201,7 @@ export const StreaksPage = () => {
 
   // Main state with partners list
   return (
-    <div className={styles.mainPage}>
+    <div className={styles.mainPage} style={{ paddingTop: isIOS ? "82px" : 0 }}>
       {/* Header */}
       <div className={styles.header}>
         <Typography variant="largeTitleBold">Серии</Typography>
@@ -166,12 +212,23 @@ export const StreaksPage = () => {
           }}
           aria-label="Помощь"
         >
-          <Typography variant="titleFirst">❓</Typography>
+          <HelpIcon width={20} height={20} />
         </button>
       </div>
 
       {/* Test buttons */}
-      <div style={{ padding: "8px 16px", display: "flex", gap: "8px" }}>
+      <div
+        style={{
+          padding: "8px 16px",
+          display: "flex",
+          gap: "8px",
+          position: "fixed",
+          top: "128px",
+          left: "0",
+          right: "0",
+          zIndex: 100,
+        }}
+      >
         <Button
           variant="secondary"
           onClick={() => setShowState("before-streak-premium")}
@@ -186,6 +243,16 @@ export const StreaksPage = () => {
         >
           → No Premium
         </Button>
+      </div>
+
+      <div className={styles.inputWrapper}>
+        <Input
+          iconLeft={<SearchIcon width={20} height={20} />}
+          name="search-partners"
+          placeholder="Имя или юзернейм"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       {/* Partners List */}
@@ -225,7 +292,7 @@ export const StreaksPage = () => {
                   <div className={styles.partnerInfo}>
                     <div className={styles.partnerHeader}>
                       <Typography
-                        variant="bodyBold"
+                        variant="titleThirdBold"
                         className={styles.partnerName}
                         title={partnerName}
                       >
@@ -247,14 +314,14 @@ export const StreaksPage = () => {
                     </div>
                     {secondaryText && (
                       <Typography
-                        variant="captionFirst"
+                        variant="titleThird"
                         className={styles.secondaryText}
                       >
                         {secondaryText}
                       </Typography>
                     )}
                   </div>
-                  <div className={styles.arrow}>›</div>
+                  <ChevronRightIcon width={20} height={20} />
                 </li>
               );
             })}

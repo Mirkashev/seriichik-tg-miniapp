@@ -1,14 +1,19 @@
-import { forwardRef } from 'react';
-import type { InputHTMLAttributes } from 'react';
-import styles from './Input.module.scss';
+import { forwardRef } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
+import styles from "./Input.module.scss";
+import { Typography } from "../Typography";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, className = '', ...props }, ref) => {
+  ({ label, error, iconLeft, iconRight, className = "", ...props }, ref) => {
+    const hasIcons = iconLeft || iconRight;
+
     return (
       <div className={styles.wrapper}>
         {label && (
@@ -16,15 +21,28 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {label}
           </label>
         )}
-        <input
-          ref={ref}
-          className={`${styles.input} ${error ? styles.error : ''} ${className}`}
-          aria-invalid={!!error}
-          aria-describedby={error ? `${props.id}-error` : undefined}
-          {...props}
-        />
+        <div
+          className={`${styles.inputContainer} ${hasIcons ? styles.withIcons : ""}`}
+        >
+          {iconLeft && <div className={styles.iconLeft}>{iconLeft}</div>}
+          <Typography
+            variant="titleThird"
+            as="input"
+            ref={ref}
+            className={`${styles.input} ${error ? styles.error : ""} ${className}`}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${props.id}-error` : undefined}
+            {...props}
+          />
+
+          {iconRight && <div className={styles.iconRight}>{iconRight}</div>}
+        </div>
         {error && (
-          <span id={`${props.id}-error`} className={styles.errorMessage} role="alert">
+          <span
+            id={`${props.id}-error`}
+            className={styles.errorMessage}
+            role="alert"
+          >
             {error}
           </span>
         )}
@@ -33,4 +51,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+Input.displayName = "Input";

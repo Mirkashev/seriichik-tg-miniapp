@@ -13,6 +13,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html,
 body {
   margin: 0;
+  background: linear-gradient(180deg, #ffd179 0%, #f8f8f8 100%);
 }

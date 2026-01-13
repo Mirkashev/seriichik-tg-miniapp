@@ -5,9 +5,9 @@ import styles from "./BeforeStreakPremium.module.scss";
 import CopyIcon from "@/assets/icons/copy.svg?svgr";
 import telegramBusinessImg from "@/assets/images/telegram-business.png";
 import botsImg from "@/assets/images/chat-bots.png";
+import { isIOS } from "react-device-detect";
 
 interface BeforeStreakPremiumProps {
-  onGoToSettings: () => void;
   onCopyBotUsername: () => void;
   onVideoInstructions: () => void;
   onSwitchToNoPremium: () => void;
@@ -15,14 +15,13 @@ interface BeforeStreakPremiumProps {
 }
 
 export const BeforeStreakPremium = ({
-  onGoToSettings,
   onCopyBotUsername,
   onVideoInstructions,
   onSwitchToNoPremium,
   onSwitchToStreaks,
 }: BeforeStreakPremiumProps) => {
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{ paddingTop: isIOS ? "100px" : 0 }}>
       <div className={styles.premiumGuide}>
         <Typography variant="titleFirstBold" className={styles.guideTitle}>
           Как завести серийчика?
@@ -94,17 +93,7 @@ export const BeforeStreakPremium = ({
       </div>
 
       <div className={styles.actions}>
-        <Button onClick={onGoToSettings}>Перейти в настройки</Button>
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            onVideoInstructions();
-          }}
-          className={styles.videoLink}
-        >
-          <Button variant="secondary">Видео инструкция</Button>
-        </a>
+        <Button onClick={onVideoInstructions}>Видео инструкция</Button>
       </div>
 
       {/* Test buttons */}
@@ -114,11 +103,10 @@ export const BeforeStreakPremium = ({
           display: "flex",
           gap: "8px",
           position: "fixed",
-          top: "16px",
+          top: "128px",
           left: "0",
           right: "0",
           zIndex: 100,
-          backgroundColor: "#fff9e6",
         }}
       >
         <Button

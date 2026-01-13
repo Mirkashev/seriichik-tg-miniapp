@@ -2,6 +2,7 @@ import { Typography } from "@/shared/ui/Typography";
 import { Button } from "@/shared/ui/Button";
 import styles from "./BeforeStreakNoPremium.module.scss";
 import character from "@/assets/images/no-premium-pet.png";
+import { isIOS } from "react-device-detect";
 
 interface BeforeStreakNoPremiumProps {
   onInviteFriend: () => void;
@@ -15,7 +16,7 @@ export const BeforeStreakNoPremium = ({
   onSwitchToStreaks,
 }: BeforeStreakNoPremiumProps) => {
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{ paddingTop: isIOS ? "100px" : 0 }}>
       <div className={styles.emptyState}>
         <img src={character} alt="Character" className={styles.character} />
         <div className={styles.emptyStateContent}>
@@ -42,11 +43,10 @@ export const BeforeStreakNoPremium = ({
           display: "flex",
           gap: "8px",
           position: "fixed",
-          top: "16px",
+          top: "128px",
           left: "0",
           right: "0",
           zIndex: 100,
-          backgroundColor: "#fff9e6",
         }}
       >
         <Button
