@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import mkcert from "vite-plugin-mkcert";
+// import mkcert from "vite-plugin-mkcert";
 // @ts-expect-error - vite-plugin-eruda has typing issues with exports
 import eruda from "vite-plugin-eruda";
 import svgr from "vite-plugin-svgr";
