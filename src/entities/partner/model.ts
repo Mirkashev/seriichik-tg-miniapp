@@ -15,8 +15,18 @@ export interface PartnerResponseDTO {
   isApplied: boolean;
 }
 
+export interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
 export interface PartnersApiResponse {
   partners: PartnerResponseDTO[];
+  pagination: PaginationInfo;
 }
 
 export interface Partner {
@@ -51,6 +61,5 @@ export const mapPartnerFromDTO = (dto: PartnerResponseDTO): Partner => ({
 
 export interface PartnersPageResponse {
   partners: Partner[];
-  hasMore: boolean;
-  nextCursor?: string;
+  pagination: PaginationInfo;
 }

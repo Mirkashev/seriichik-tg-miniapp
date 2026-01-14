@@ -4,15 +4,18 @@ import type { PartnersPageResponse } from './model';
 
 export const partnerKeys = {
   all: ['partners'] as const,
-  byUserId: (fromUserId: number) => [...partnerKeys.all, fromUserId] as const,
+  byLimit: (limit: number) => [...partnerKeys.all, limit] as const,
 };
 
-export const usePartners = (fromUserId: number) => {
+export const usePartners = (limit: number = 20) => {
   return useInfiniteQuery<PartnersPageResponse>({
-    queryKey: partnerKeys.byUserId(fromUserId),
-    queryFn: ({ pageParam }) => partnerApi.getPartners(fromUserId, pageParam as string | undefined),
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextCursor : undefined),
-    enabled: !!fromUserId,
+    queryKey: partnerKeys.byLimit(limit),
+    queryFn: ({ pageParam }) =>
+      partnerApi.getPartners(pageParam as number, limit),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.hasNextPage
+        ? lastPage.pagination.page + 1
+        : undefined,
   });
 };

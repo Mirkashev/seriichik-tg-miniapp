@@ -21,7 +21,10 @@ export const BeforeStreakPremium = ({
   onSwitchToStreaks,
 }: BeforeStreakPremiumProps) => {
   return (
-    <div className={styles.page} style={{ paddingTop: isIOS ? "100px" : 0 }}>
+    <div
+      className={styles.page}
+      style={{ paddingTop: isIOS ? "100px" : "24px" }}
+    >
       <div className={styles.premiumGuide}>
         <Typography variant="titleFirstBold" className={styles.guideTitle}>
           Как завести серийчика?

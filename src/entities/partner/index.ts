@@ -1,2 +1,7 @@
-export { usePartners, partnerKeys } from './queries';
-export type { Partner, PartnerResponseDTO, PartnersPageResponse } from './model';
+export { usePartners, partnerKeys } from "./queries";
+export type {
+  Partner,
+  PartnerResponseDTO,
+  PartnersPageResponse,
+  PaginationInfo,
+} from "./model";

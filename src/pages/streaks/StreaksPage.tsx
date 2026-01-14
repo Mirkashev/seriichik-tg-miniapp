@@ -28,7 +28,6 @@ export const StreaksPage = () => {
   const navigate = useNavigate();
   const launchParams = useLaunchParams(true);
   const user = launchParams.tgWebAppData?.user;
-  const userId = user?.id;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -52,7 +51,7 @@ export const StreaksPage = () => {
     isFetchingNextPage,
     isLoading,
     error,
-  } = usePartners(userId || 0);
+  } = usePartners();
 
   console.log(data);
 
