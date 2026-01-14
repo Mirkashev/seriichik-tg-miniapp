@@ -1,5 +1,5 @@
-import type { HTMLAttributes } from 'react';
-import styles from './ProgressBar.module.scss';
+import type { HTMLAttributes } from "react";
+import styles from "./ProgressBar.module.scss";
 
 export interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
   value: number;
@@ -7,7 +7,7 @@ export interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
   showLabel?: boolean;
   color?: string;
   striped?: boolean;
-  labelPosition?: 'inside' | 'outside';
+  labelPosition?: "inside" | "outside";
 }
 
 export const ProgressBar = ({
@@ -16,8 +16,8 @@ export const ProgressBar = ({
   showLabel = false,
   color,
   striped = false,
-  labelPosition = 'outside',
-  className = '',
+  labelPosition = "outside",
+  className = "",
   ...props
 }: ProgressBarProps) => {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
@@ -26,24 +26,24 @@ export const ProgressBar = ({
     <div className={`${styles.wrapper} ${className}`} {...props}>
       <div className={styles.track}>
         <div
-          className={`${styles.fill} ${striped ? styles.striped : ''}`}
-          style={{ 
+          className={`${styles.fill} ${striped ? styles.striped : ""}`}
+          style={{
             width: `${percentage}%`,
-            ...(color && { backgroundColor: color })
+            ...(color && { backgroundColor: color }),
           }}
           role="progressbar"
           aria-valuenow={value}
           aria-valuemin={0}
           aria-valuemax={max}
         >
-          {showLabel && labelPosition === 'inside' && (
+          {showLabel && labelPosition === "inside" && (
             <span className={styles.labelInside}>
               {value} / {max}
             </span>
           )}
         </div>
       </div>
-      {showLabel && labelPosition === 'outside' && (
+      {showLabel && labelPosition === "outside" && (
         <span className={styles.label}>
           {value} / {max}
         </span>

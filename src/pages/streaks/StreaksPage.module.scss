@@ -195,3 +195,32 @@
   padding: 16px;
   z-index: 10;
 }
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 120px 16px 32px;
+  background-color: var(--background-default);
+  border-radius: 16px 16px 0 0;
+  position: absolute;
+  bottom: 0;
+}
+
+.modalImage {
+  width: 282px;
+  height: 184px;
+  object-fit: cover;
+  position: absolute;
+  top: -84px;
+}
+
+.modalText {
+  text-align: center;
+}
+
+.modalButton {
+  margin-top: 8px;
+}

@@ -4,6 +4,8 @@
   align-items: center;
   margin-bottom: 32px;
   position: relative;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .petImageContainer {
@@ -15,7 +17,7 @@
 }
 
 .slider {
-  width: 295px;
+  width: 100%;
 }
 
 .slide {
@@ -25,8 +27,8 @@
 }
 
 .petImage {
-  width: 295px;
-  height: 255px;
+  max-width: 295px;
+  max-height: 255px;
   object-fit: contain;
 }
 
@@ -54,12 +56,12 @@
 }
 
 .arrowLeft {
-  left: -20px;
+  left: -16px;
   transform: translateY(-50%) rotate(180deg);
 }
 
 .arrowRight {
-  right: -20px;
+  right: -16px;
 }
 
 .arrowDisabled {
@@ -102,6 +104,6 @@
 
 .progressDescription {
   text-align: center;
-  color: var(--text-ter, #878787);
+  color: var(--text-second);
   font-size: 14px;
 }

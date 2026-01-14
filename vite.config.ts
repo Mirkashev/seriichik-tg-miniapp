@@ -10,12 +10,12 @@ export default defineConfig(({ command }) => {
   if (command === "serve") {
     return {
       server: {
-        host: "localhost",
-        // allowedHosts: ["9966a0534464.ngrok-free.app"],
+        // host: "localhost",
+        allowedHosts: ["866ac3ffef11.ngrok-free.app"],
       },
       plugins: [
         react(),
-        mkcert(),
+        // mkcert(),
         eruda(), // Инициализирует Eruda для отладки в мини-аппе
         svgr({ include: "**/*.svg?svgr" }),
       ],

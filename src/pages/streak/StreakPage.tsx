@@ -5,9 +5,8 @@ import { Typography } from "@/shared/ui/Typography";
 import { Loader } from "@/shared/ui/Loader";
 import { getAvatarFallback } from "@/shared/utils/telegramPhoto";
 import { PetSection } from "./ui/PetSection";
-import { getPetImage } from "./utils/getPetImage";
 import styles from "./StreakPage.module.scss";
-import { postEvent, backButton } from "@tma.js/sdk-react";
+import { backButton } from "@tma.js/sdk-react";
 import { isIOS } from "react-device-detect";
 import CheckMark from "@/assets/icons/check-mark.svg?svgr";
 
@@ -157,8 +156,8 @@ export const StreakPage = () => {
   }, [pet]);
 
   useEffect(() => {
-    postEvent("web_app_set_background_color", { color: "#f8f8f8" });
-    postEvent("web_app_set_header_color", { color: "#ffd179" });
+    console.log("useEffect");
+
     backButton.mount();
     backButton.show();
     backButton.onClick(() => {
@@ -199,10 +198,12 @@ export const StreakPage = () => {
   const progressMax = expForNextLevel;
   const remainingPoints = progressMax - progressValue;
   const petName = pet.name || "Питомец";
-  const petImageUrl = getPetImage(pet.level);
 
   return (
-    <div className={styles.page} style={{ paddingTop: isIOS ? "100px" : 0 }}>
+    <div
+      className={styles.page}
+      style={{ paddingTop: isIOS ? "100px" : "24px" }}
+    >
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.streakCounter}>
@@ -228,7 +229,7 @@ export const StreakPage = () => {
       {/* Pet Section */}
       <PetSection
         petName={petName}
-        petImageUrl={petImageUrl}
+        petLevel={pet.level}
         progressValue={progressValue}
         progressMax={progressMax}
         remainingPoints={remainingPoints}

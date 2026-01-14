@@ -12,31 +12,63 @@ import petLevel3 from "@/assets/images/pets/3.png";
 import petLevel4 from "@/assets/images/pets/4.png";
 import petLevel5 from "@/assets/images/pets/5.png";
 
+import noPetLevel2 from "@/assets/images/pets/no-2.png";
+import noPetLevel3 from "@/assets/images/pets/no-3.png";
+import noPetLevel4 from "@/assets/images/pets/no-4.png";
+import noPetLevel5 from "@/assets/images/pets/no-5.png";
+import { postEvent } from "@tma.js/sdk-react";
+
 interface PetSectionProps {
   petName: string;
-  petImageUrl: string;
+  petLevel: number;
   progressValue: number;
   progressMax: number;
   remainingPoints: number;
 }
 
-const petImages = [petLevel1, petLevel2, petLevel3, petLevel4, petLevel5];
+const allPetImages = [petLevel1, petLevel2, petLevel3, petLevel4, petLevel5];
+const noPetImages = [noPetLevel2, noPetLevel3, noPetLevel4, noPetLevel5];
+// TODO: в будущем добавить транзишн для header цвета
+const tgHeaderColors = ["ffd179", "fea386", "ff8efa", "6873ff", "99fff2"];
+const progressColors = ["#fb8a0e", "#F15C1E", "#D841A5", "#358BED", "#15B0E9"];
+
+const getPetImages = (level: number): string[] => {
+  const images: string[] = [];
+
+  for (let i = 0; i < 5; i++) {
+    if (i < level) {
+      images.push(allPetImages[i]);
+    } else {
+      images.push(noPetImages[i - 1]);
+    }
+  }
+
+  return images;
+};
 
 export const PetSection = ({
   petName,
-  petImageUrl,
+  petLevel,
   progressValue,
   progressMax,
   remainingPoints,
 }: PetSectionProps) => {
-  console.log(petImageUrl);
+  const petImages = getPetImages(petLevel);
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [totalSlides, setTotalSlides] = useState(petImages.length);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
-    initial: 0,
+    initial: petLevel - 1,
     slideChanged(slider) {
       setCurrentSlide(slider.track.details.rel);
+      postEvent("web_app_set_background_color", {
+        color: `#f8f8f8`,
+      });
+      postEvent("web_app_set_header_color", {
+        color: `#${tgHeaderColors[slider.track.details.rel]}`,
+      });
+      document.body.style.background = `linear-gradient(180deg, #${tgHeaderColors[slider.track.details.rel]} 0%, #f8f8f8 100%)`;
     },
     created(slider) {
       setLoaded(true);
@@ -105,13 +137,10 @@ export const PetSection = ({
           max={progressMax}
           showLabel
           labelPosition="inside"
-          color="#FB8A0E"
+          color={progressColors[currentSlide]}
           striped
         />
-        <Typography
-          variant="captionFirst"
-          className={styles.progressDescription}
-        >
+        <Typography variant="body" className={styles.progressDescription}>
           {remainingPoints} очков до нового облика
         </Typography>
       </div>

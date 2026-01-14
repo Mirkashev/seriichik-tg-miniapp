@@ -21,12 +21,16 @@ import { useDebounce } from "@/shared/utils/hooks/useDebounce";
 import SearchIcon from "@/assets/icons/search.svg?svgr";
 import ChevronRightIcon from "@/assets/icons/chevron-right.svg?svgr";
 import { isIOS } from "react-device-detect";
+import { Modal } from "@/shared/ui/Modal";
+import seriichikIncoming from "@/assets/images/seriichik-incoming.png";
 
 export const StreaksPage = () => {
   const navigate = useNavigate();
   const launchParams = useLaunchParams(true);
   const user = launchParams.tgWebAppData?.user;
   const userId = user?.id;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   console.log(isIOS);
 
@@ -49,6 +53,8 @@ export const StreaksPage = () => {
     isLoading,
     error,
   } = usePartners(userId || 0);
+
+  console.log(data);
 
   const partners = useMemo(() => {
     return data?.pages.flatMap((page) => page.partners) ?? [];
@@ -98,6 +104,7 @@ export const StreaksPage = () => {
   };
 
   const handleInviteFriend = () => {
+    // TODO: после появления запроса на получение данных юзера добавить 2 новые модалки
     const text = "Привет! Давай заведем серийчика!";
     const botUrl = "@testMirkBot";
 
@@ -202,6 +209,30 @@ export const StreaksPage = () => {
   // Main state with partners list
   return (
     <div className={styles.mainPage} style={{ paddingTop: isIOS ? "82px" : 0 }}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className={styles.modalContent}>
+          <img
+            className={styles.modalImage}
+            src={seriichikIncoming}
+            alt="Серийчик"
+          />
+          <Typography variant="titleFirstBold">
+            Серийчик скоро вылупится
+          </Typography>
+          <Typography className={styles.modalText} variant="titleSecond">
+            Общайтесь 3 дня подряд, чтобы начать серию и смотрите как из яйца
+            выплупится Серийчик
+          </Typography>
+          <Button
+            className={styles.modalButton}
+            onClick={() => {
+              setIsModalOpen(false);
+            }}
+          >
+            Понятно
+          </Button>
+        </div>
+      </Modal>
       {/* Header */}
       <div className={styles.header}>
         <Typography variant="largeTitleBold">Серии</Typography>
@@ -277,7 +308,12 @@ export const StreaksPage = () => {
                 <li
                   key={partner.chatId}
                   className={styles.partnerItem}
-                  onClick={() => navigate(`/streak/${partner.chatId}`)}
+                  onClick={() => {
+                    if (partner.pet)
+                      return navigate(`/streak/${partner.chatId}`);
+
+                    setIsModalOpen(true);
+                  }}
                 >
                   <div className={styles.partnerAvatar}>
                     <img
