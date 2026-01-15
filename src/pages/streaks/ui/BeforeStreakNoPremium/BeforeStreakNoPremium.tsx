@@ -21,12 +21,12 @@ export const BeforeStreakNoPremium = ({
         <img src={character} alt="Character" className={styles.character} />
         <div className={styles.emptyStateContent}>
           <Typography
-            variant="titleFirstBold"
+            variant="textXlBold"
             className={styles.emptyStateTitle}
           >
             Хочешь завести серийчика?
           </Typography>
-          <Typography variant="titleSecond" className={styles.emptyStateText}>
+          <Typography variant="textLg" className={styles.emptyStateText}>
             Создавать серию можно с Premium. Попроси друга с подпиской создать
             серийчика с тобой!
           </Typography>

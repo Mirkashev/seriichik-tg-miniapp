@@ -24,7 +24,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Typography
         as="button"
-        variant="titleThirdBold"
+        variant="textMdSemibold"
         ref={ref}
         className={classNames}
         disabled={disabled}

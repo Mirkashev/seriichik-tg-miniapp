@@ -10,8 +10,16 @@ class HttpClient {
   private client: AxiosInstance;
 
   constructor() {
+    // В dev-режиме используем относительный путь для прокси Vite
+    // В production используем переменную окружения или относительный путь
+    const baseURL = import.meta.env.DEV
+      ? "/api"
+      : import.meta.env.VITE_API_BASE_URL
+        ? `${import.meta.env.VITE_API_BASE_URL}/api`
+        : "/api";
+
     this.client = axios.create({
-      baseURL: import.meta.env.VITE_API_BASE_URL + "/api",
+      baseURL,
       headers: {
         "Content-Type": "application/json",
       },

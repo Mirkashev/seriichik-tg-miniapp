@@ -26,7 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         >
           {iconLeft && <div className={styles.iconLeft}>{iconLeft}</div>}
           <Typography
-            variant="titleThird"
+            variant="textMd"
             as="input"
             ref={ref}
             className={`${styles.input} ${error ? styles.error : ""} ${className}`}

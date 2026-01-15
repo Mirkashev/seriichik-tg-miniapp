@@ -1,150 +1,282 @@
 .typography {
   font-family:
-    "SF Pro",
+    "Inter",
     system-ui,
     -apple-system,
     sans-serif;
 }
 
-/* largeTitle / largeTitleBold */
-.largeTitle {
-  font-size: 26px;
-  line-height: 32px;
+/* Text XS - 12/18 */
+.textXs {
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 400;
 }
 
-.largeTitleBold {
-  font-size: 26px;
-  line-height: 32px;
+.textXsMedium {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+}
+
+.textXsSemibold {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.textXsBold {
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
 }
 
-/* titleFirst / titleFirstBold */
-.titleFirst {
-  font-size: 22px;
-  line-height: 26px;
-  font-weight: 400;
-}
-
-.titleFirstBold {
-  font-size: 22px;
-  line-height: 26px;
-  font-weight: 700;
-}
-
-/* titleSecond / titleSecondBold */
-.titleSecond {
-  font-size: 17px;
-  line-height: 22px;
-  font-weight: 400;
-}
-
-.titleSecondBold {
-  font-size: 17px;
-  line-height: 22px;
-  font-weight: 700;
-}
-
-/* titleThird / titleThirdBold */
-.titleThird {
-  font-size: 15px;
+/* Text SM - 14/20 */
+.textSm {
+  font-size: 14px;
   line-height: 20px;
   font-weight: 400;
 }
 
-.titleThirdBold {
-  font-size: 15px;
+.textSmMedium {
+  font-size: 14px;
   line-height: 20px;
-  font-weight: 590;
+  font-weight: 500;
 }
 
-/* headline / headlineBold */
-.headline {
-  font-size: 13px;
-  line-height: 16px;
+.textSmSemibold {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.textSmBold {
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 700;
 }
 
-.headlineBold {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 890;
-}
-
-/* body / bodyBold */
-.body {
-  font-size: 13px;
-  line-height: 16px;
+/* Text MD - 16/24 */
+.textMd {
+  font-size: 16px;
+  line-height: 24px;
   font-weight: 400;
 }
 
-.bodyBold {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 590;
+.textMdMedium {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
 }
 
-/* callout / calloutBold */
-.callout {
-  font-size: 12px;
-  line-height: 15px;
+.textMdSemibold {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.textMdBold {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+}
+
+/* Text LG - 18/28 */
+.textLg {
+  font-size: 18px;
+  line-height: 28px;
   font-weight: 400;
 }
 
-.calloutBold {
-  font-size: 12px;
-  line-height: 15px;
-  font-weight: 590;
+.textLgMedium {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 500;
 }
 
-/* subHeadline / subHeadlineBold */
-.subHeadline {
-  font-size: 11px;
-  line-height: 14px;
+.textLgSemibold {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 600;
+}
+
+.textLgBold {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 700;
+}
+
+/* Text XL - 20/30 */
+.textXl {
+  font-size: 20px;
+  line-height: 30px;
   font-weight: 400;
 }
 
-.subHeadlineBold {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 590;
+.textXlMedium {
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 500;
 }
 
-/* footNote / footNoteBold */
-.footNote {
-  font-size: 10px;
-  line-height: 13px;
+.textXlSemibold {
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 600;
+}
+
+.textXlBold {
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 700;
+}
+
+/* Display XS - 24/32 */
+.displayXs {
+  font-size: 24px;
+  line-height: 32px;
   font-weight: 400;
 }
 
-.footNoteBold {
-  font-size: 10px;
-  line-height: 13px;
-  font-weight: 590;
+.displayXsMedium {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
 }
 
-/* captionFirst / captionFirstBold */
-.captionFirst {
-  font-size: 10px;
-  line-height: 13px;
+.displayXsSemibold {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+
+.displayXsBold {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+}
+
+/* Display SM - 30/38 */
+.displaySm {
+  font-size: 30px;
+  line-height: 38px;
   font-weight: 400;
 }
 
-.captionFirstBold {
-  font-size: 10px;
-  line-height: 13px;
-  font-weight: 510;
+.displaySmMedium {
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: 500;
 }
 
-/* captionSecond / captionSecondBold */
-.captionSecond {
-  font-size: 10px;
-  line-height: 13px;
-  font-weight: 510;
+.displaySmSemibold {
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: 600;
 }
 
-.captionSecondBold {
-  font-size: 10px;
-  line-height: 13px;
-  font-weight: 590;
+.displaySmBold {
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: 700;
+}
+
+/* Display MD - 36/44 */
+.displayMd {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 400;
+}
+
+.displayMdMedium {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 500;
+}
+
+.displayMdSemibold {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 600;
+}
+
+.displayMdBold {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 700;
+}
+
+/* Display LG - 48/60 */
+.displayLg {
+  font-size: 48px;
+  line-height: 60px;
+  font-weight: 400;
+}
+
+.displayLgMedium {
+  font-size: 48px;
+  line-height: 60px;
+  font-weight: 500;
+}
+
+.displayLgSemibold {
+  font-size: 48px;
+  line-height: 60px;
+  font-weight: 600;
+}
+
+.displayLgBold {
+  font-size: 48px;
+  line-height: 60px;
+  font-weight: 700;
+}
+
+/* Display XL - 60/72 */
+.displayXl {
+  font-size: 60px;
+  line-height: 72px;
+  font-weight: 400;
+}
+
+.displayXlMedium {
+  font-size: 60px;
+  line-height: 72px;
+  font-weight: 500;
+}
+
+.displayXlSemibold {
+  font-size: 60px;
+  line-height: 72px;
+  font-weight: 600;
+}
+
+.displayXlBold {
+  font-size: 60px;
+  line-height: 72px;
+  font-weight: 700;
+}
+
+/* Display 2XL - 72/90 */
+.display2xl {
+  font-size: 72px;
+  line-height: 90px;
+  font-weight: 400;
+}
+
+.display2xlMedium {
+  font-size: 72px;
+  line-height: 90px;
+  font-weight: 500;
+}
+
+.display2xlSemibold {
+  font-size: 72px;
+  line-height: 90px;
+  font-weight: 600;
+}
+
+.display2xlBold {
+  font-size: 72px;
+  line-height: 90px;
+  font-weight: 700;
 }

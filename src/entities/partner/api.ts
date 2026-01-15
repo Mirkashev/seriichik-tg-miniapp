@@ -5,10 +5,11 @@ import type { PartnersApiResponse, PartnersPageResponse } from './model';
 export const partnerApi = {
   getPartners: async (
     page: number = 1,
-    limit: number = 20
+    limit: number = 20,
+    searchText?: string
   ): Promise<PartnersPageResponse> => {
     const response = await httpClient.get<PartnersApiResponse>('/partners', {
-      params: { page, limit },
+      params: { page, limit, ...(searchText && { searchText }) },
     });
 
     // Извлекаем partners из ответа и маппим

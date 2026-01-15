@@ -176,8 +176,8 @@ export const StreakPage = () => {
   if (error) {
     return (
       <div className={styles.error}>
-        <Typography variant="titleFirstBold">Ошибка загрузки</Typography>
-        <Typography variant="body">
+        <Typography variant="textXlBold">Ошибка загрузки</Typography>
+        <Typography variant="textSm">
           Не удалось загрузить данные питомца
         </Typography>
       </div>
@@ -187,7 +187,7 @@ export const StreakPage = () => {
   if (!pet) {
     return (
       <div className={styles.error}>
-        <Typography variant="titleFirstBold">Питомец не найден</Typography>
+        <Typography variant="textXlBold">Питомец не найден</Typography>
       </div>
     );
   }
@@ -207,10 +207,10 @@ export const StreakPage = () => {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.streakCounter}>
-          <Typography variant="titleThird" className={styles.streakLabel}>
+          <Typography variant="textMd" className={styles.streakLabel}>
             Дней стрика
           </Typography>
-          <Typography variant="largeTitleBold" className={styles.streakNumber}>
+          <Typography variant="displayXsBold" className={styles.streakNumber}>
             {pet.streakCount}
           </Typography>
         </div>
@@ -237,7 +237,7 @@ export const StreakPage = () => {
 
       {/* Tasks Card */}
       <div className={styles.tasksCard}>
-        <Typography variant="titleSecondBold" className={styles.tasksTitle}>
+        <Typography variant="textLgBold" className={styles.tasksTitle}>
           Вырасти питомца
         </Typography>
         <ul className={styles.tasksList}>
@@ -250,12 +250,12 @@ export const StreakPage = () => {
               />
               <div className={styles.taskContent}>
                 <Typography
-                  variant="titleThirdBold"
+                  variant="textMdSemibold"
                   className={styles.taskText}
                 >
                   {task.text}
                 </Typography>
-                <Typography variant="titleThird" className={styles.taskPoints}>
+                <Typography variant="textMd" className={styles.taskPoints}>
                   <span className={styles.taskPointsNumber}>
                     +{task.points}
                   </span>{" "}

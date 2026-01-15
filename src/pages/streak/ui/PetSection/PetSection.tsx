@@ -123,7 +123,7 @@ export const PetSection = ({
       </div>
       <div className={styles.petNameContainer}>
         <Typography
-          variant="titleFirstBold"
+          variant="textXlBold"
           className={styles.petName}
           as="span"
         >
@@ -140,7 +140,7 @@ export const PetSection = ({
           color={progressColors[currentSlide]}
           striped
         />
-        <Typography variant="body" className={styles.progressDescription}>
+        <Typography variant="textSm" className={styles.progressDescription}>
           {remainingPoints} очков до нового облика
         </Typography>
       </div>

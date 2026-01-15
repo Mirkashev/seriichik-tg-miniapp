@@ -26,16 +26,16 @@ export const BeforeStreakPremium = ({
       style={{ paddingTop: isIOS ? "100px" : "24px" }}
     >
       <div className={styles.premiumGuide}>
-        <Typography variant="titleFirstBold" className={styles.guideTitle}>
+        <Typography variant="textXlBold" className={styles.guideTitle}>
           Как завести серийчика?
         </Typography>
         {/* Step 1 */}
         <div className={styles.stepCard}>
           <div className={styles.stepNumber}>
-            <Typography variant="body">1</Typography>
+            <Typography variant="textSm">1</Typography>
           </div>
           <div className={styles.stepContent}>
-            <Typography variant="titleThirdBold" className={styles.stepText}>
+            <Typography variant="textMdSemibold" className={styles.stepText}>
               Открой Настройки в Telegram
             </Typography>
           </div>
@@ -44,10 +44,10 @@ export const BeforeStreakPremium = ({
         {/* Step 2 */}
         <div className={styles.stepCard}>
           <div className={styles.stepNumber}>
-            <Typography variant="body">2</Typography>
+            <Typography variant="textSm">2</Typography>
           </div>
           <div className={styles.stepContent}>
-            <Typography variant="titleThirdBold" className={styles.stepText}>
+            <Typography variant="textMdSemibold" className={styles.stepText}>
               Нажми «Telegram для бизнеса»
             </Typography>
             <img src={telegramBusinessImg} alt="Telegram для бизнеса" />
@@ -57,10 +57,10 @@ export const BeforeStreakPremium = ({
         {/* Step 3 */}
         <div className={styles.stepCard}>
           <div className={styles.stepNumber}>
-            <Typography variant="body">3</Typography>
+            <Typography variant="textSm">3</Typography>
           </div>
           <div className={styles.stepContent}>
-            <Typography variant="titleThirdBold" className={styles.stepText}>
+            <Typography variant="textMdSemibold" className={styles.stepText}>
               Открой раздел «Чат-боты»
             </Typography>
             <img src={botsImg} alt="Чат-боты" />
@@ -70,14 +70,14 @@ export const BeforeStreakPremium = ({
         {/* Step 4 */}
         <div className={styles.stepCard}>
           <div className={styles.stepNumber}>
-            <Typography variant="body">4</Typography>
+            <Typography variant="textSm">4</Typography>
           </div>
           <div className={styles.stepContent}>
-            <Typography variant="titleThirdBold" className={styles.stepText}>
+            <Typography variant="textMdSemibold" className={styles.stepText}>
               Добавь этого бота
             </Typography>
             <div className={styles.botInput}>
-              <Typography variant="titleThird" className={styles.botUsername}>
+              <Typography variant="textMd" className={styles.botUsername}>
                 @serichikbot
               </Typography>
               <button

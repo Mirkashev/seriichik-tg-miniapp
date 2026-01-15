@@ -12,6 +12,14 @@ export default defineConfig(({ command }) => {
       server: {
         host: "localhost",
         // allowedHosts: ["866ac3ffef11.ngrok-free.app"],
+        proxy: {
+          "/api": {
+            target: "http://localhost:3000",
+            changeOrigin: true,
+            secure: true,
+            rewrite: (path) => path,
+          },
+        },
       },
       plugins: [
         react(),

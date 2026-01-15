@@ -33,8 +33,8 @@ export const StreaksPage = () => {
 
   console.log(isIOS);
 
-  // TODO: add search to backend
   const [search, setSearch] = useState("");
+  // TODO: добавить отдельную модалку для поиска
   const debouncedSearch = useDebounce(search, 500);
   console.log(debouncedSearch);
 
@@ -51,9 +51,7 @@ export const StreaksPage = () => {
     isFetchingNextPage,
     isLoading,
     error,
-  } = usePartners();
-
-  console.log(data);
+  } = usePartners(20);
 
   const partners = useMemo(() => {
     return data?.pages.flatMap((page) => page.partners) ?? [];
@@ -156,7 +154,7 @@ export const StreaksPage = () => {
   if (error) {
     return (
       <div className={styles.page}>
-        <Typography variant="titleFirstBold">Ошибка загрузки</Typography>
+        <Typography variant="textXlBold">Ошибка загрузки</Typography>
       </div>
     );
   }
@@ -215,10 +213,8 @@ export const StreaksPage = () => {
             src={seriichikIncoming}
             alt="Серийчик"
           />
-          <Typography variant="titleFirstBold">
-            Серийчик скоро вылупится
-          </Typography>
-          <Typography className={styles.modalText} variant="titleSecond">
+          <Typography variant="textXlBold">Серийчик скоро вылупится</Typography>
+          <Typography className={styles.modalText} variant="textLg">
             Общайтесь 3 дня подряд, чтобы начать серию и смотрите как из яйца
             выплупится Серийчик
           </Typography>
@@ -234,7 +230,7 @@ export const StreaksPage = () => {
       </Modal>
       {/* Header */}
       <div className={styles.header}>
-        <Typography variant="largeTitleBold">Серии</Typography>
+        <Typography variant="displayXsBold">Серии</Typography>
         <button
           className={styles.helpButton}
           onClick={() => {
@@ -289,7 +285,10 @@ export const StreaksPage = () => {
       <div className={styles.listContainer}>
         {partners.length === 0 ? (
           <div className={styles.emptyList}>
-            <Typography variant="body" style={{ color: "var(--text-second)" }}>
+            <Typography
+              variant="textSm"
+              style={{ color: "var(--text-second)" }}
+            >
               Нет стриков
             </Typography>
           </div>
@@ -327,7 +326,7 @@ export const StreaksPage = () => {
                   <div className={styles.partnerInfo}>
                     <div className={styles.partnerHeader}>
                       <Typography
-                        variant="titleThirdBold"
+                        variant="textMdSemibold"
                         className={styles.partnerName}
                         title={partnerName}
                       >
@@ -341,7 +340,7 @@ export const StreaksPage = () => {
                           style={{ color: streakColor }}
                         >
                           <span>{streakEmoji}</span>
-                          <Typography variant="bodyBold">
+                          <Typography variant="textSmSemibold">
                             {partner.streakCount}
                           </Typography>
                         </div>
@@ -349,7 +348,7 @@ export const StreaksPage = () => {
                     </div>
                     {secondaryText && (
                       <Typography
-                        variant="titleThird"
+                        variant="textMd"
                         className={styles.secondaryText}
                       >
                         {secondaryText}
