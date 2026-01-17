@@ -1,35 +1,45 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { usePet, QuestType, type Quest } from "@/entities/pet";
+import { usePet, QuestType, type User, useRestoreStreak } from "@/entities/pet";
 import { Typography } from "@/shared/ui/Typography";
 import { Loader } from "@/shared/ui/Loader";
-import { getAvatarFallback } from "@/shared/utils/telegramPhoto";
 import { PetSection } from "./ui/PetSection";
 import styles from "./StreakPage.module.scss";
 import { backButton } from "@tma.js/sdk-react";
 import { isIOS } from "react-device-detect";
-import CheckMark from "@/assets/icons/check-mark.svg?svgr";
+import {
+  accentColors,
+  linearGradientAccentColors,
+  taskIconColors,
+} from "@/shared/consts";
+import { getAvatarFallback } from "@/shared/utils/helpers/telegramPhoto";
 
-interface Task {
-  id: string;
-  text: string;
-  points: number;
-  completed: boolean;
-  counter?: number;
-  avatars?: string[];
-}
+import badge1 from "@/assets/images/badges/1.png";
+import badge2 from "@/assets/images/badges/2.png";
+import badge3 from "@/assets/images/badges/3.png";
+import badge4 from "@/assets/images/badges/4.png";
+import badge5 from "@/assets/images/badges/5.png";
 
-const getUserName = (user: {
-  firstName?: string;
-  lastName?: string;
-  username?: string;
-}): string => {
-  if (user.firstName || user.lastName) {
-    return [user.firstName, user.lastName].filter(Boolean).join(" ");
-  }
-  return user.username || "Unknown";
-};
+import noBadge2 from "@/assets/images/badges/no-2.png";
+import noBadge3 from "@/assets/images/badges/no-3.png";
+import noBadge4 from "@/assets/images/badges/no-4.png";
+import noBadge5 from "@/assets/images/badges/no-5.png";
 
+import coldPet from "@/assets/images/pets/cold-1.png";
+import coldPet2 from "@/assets/images/pets/cold-2.png";
+import coldPet3 from "@/assets/images/pets/cold-3.png";
+import coldPet4 from "@/assets/images/pets/cold-4.png";
+import coldPet5 from "@/assets/images/pets/cold-5.png";
+
+const coldPetImages = [coldPet, coldPet2, coldPet3, coldPet4, coldPet5];
+
+import { getTodayStart } from "@/shared/utils/helpers/getTodayStart";
+import { Button } from "@/shared/ui/Button";
+
+const allBadges = [badge1, badge2, badge3, badge4, badge5];
+const noBadges = ["", noBadge2, noBadge3, noBadge4, noBadge5];
+
+// TODO: в будущем добавить транзишн для header цвета
 const getQuestText = (type: QuestType): string => {
   switch (type) {
     case QuestType.TEXT_1:
@@ -74,95 +84,74 @@ export const StreakPage = () => {
   const { data: pet, isLoading, error } = usePet(chatId || "");
   const navigate = useNavigate();
 
-  // Получаем аватары из данных пета
-  const avatars = useMemo(() => {
-    if (!pet) return [];
+  const { mutateAsync: restoreStreak, isPending: isRestoringStreak } =
+    useRestoreStreak();
 
-    const toUserName = getUserName(pet.toUser);
-    const fromUserName = getUserName(pet.fromUser);
+  const todayStart = getTodayStart(pet?.fromUser.timeZone);
 
-    return [getAvatarFallback(toUserName), getAvatarFallback(fromUserName)];
-  }, [pet]);
+  const stateSad =
+    pet && todayStart.getTime() > pet.streakLastIncrementAt.getTime();
 
-  // Преобразуем квесты в задачи для отображения
-  const tasks: Task[] = useMemo(() => {
-    if (!pet) return [];
+  const stateCold =
+    pet &&
+    todayStart.getTime() - pet.streakLastIncrementAt.getTime() >
+      48 * 60 * 60 * 1000;
 
-    // Группируем квесты по типу
-    const questsByType = pet.quests.reduce(
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const usersByQuestType = useMemo(() => {
+    if (!pet) return {} as Record<QuestType, (User & { counter: number })[]>;
+
+    return pet.quests.reverse().reduce(
       (acc, quest) => {
-        if (!acc[quest.type]) {
-          acc[quest.type] = [];
-        }
-        acc[quest.type].push(quest);
+        acc[quest.type] = [
+          ...(acc[quest.type] || []),
+          quest.userId === pet.toUser.id
+            ? { ...pet.toUser, counter: quest.currentValue }
+            : { ...pet.fromUser, counter: quest.currentValue },
+        ];
         return acc;
       },
-      {} as Record<QuestType, Quest[]>
+      {} as Record<QuestType, (User & { counter: number })[]>
     );
+  }, [pet]);
 
-    // Создаем задачи для каждого типа квеста
-    const allQuestTypes = [
-      QuestType.TEXT_1,
-      QuestType.VIDEO_1,
-      QuestType.TEXT_10,
-    ];
+  const tasks = useMemo(() => {
+    if (!pet) return [];
 
-    return allQuestTypes.map((questType) => {
-      const quests = questsByType[questType] || [];
-      const toUserQuest = quests.find((q) => q.userId === pet.toUser.id);
-      const fromUserQuest = quests.find((q) => q.userId === pet.fromUser.id);
+    const allTasks = pet.quests.map((quest) => ({
+      id: quest.id,
+      text: getQuestText(quest.type),
+      points: getQuestPoints(quest.type),
+      target: getQuestTarget(quest.type),
+      questType: quest.type,
+    }));
 
-      // Определяем, завершен ли квест (оба пользователя должны завершить)
-      const toUserCompleted = toUserQuest?.isCompleted ?? false;
-      const fromUserCompleted = fromUserQuest?.isCompleted ?? false;
-      const isCompleted = toUserCompleted && fromUserCompleted;
-
-      // Определяем прогресс для квестов типа TEXT_10
-      let counter: number | undefined;
-      if (questType === QuestType.TEXT_10) {
-        const toUserProgress = toUserQuest?.currentValue ?? 0;
-        const fromUserProgress = fromUserQuest?.currentValue ?? 0;
-        // Показываем минимальный прогресс (когда оба завершат, показываем target)
-        const maxProgress = Math.max(toUserProgress, fromUserProgress);
-        const target = getQuestTarget(questType);
-        if (maxProgress > 0 && maxProgress < target) {
-          counter = maxProgress;
-        }
+    // Keep only unique tasks by questType
+    const seenTypes = new Set<QuestType>();
+    return allTasks.filter((task) => {
+      if (seenTypes.has(task.questType)) {
+        return false;
       }
-
-      // Определяем аватары пользователей, которые выполнили квест
-      // Показываем аватары только для незавершенных квестов
-      const completedAvatars: string[] = [];
-      if (!isCompleted) {
-        if (toUserCompleted) {
-          const toUserName = getUserName(pet.toUser);
-          completedAvatars.push(getAvatarFallback(toUserName));
-        }
-        if (fromUserCompleted) {
-          const fromUserName = getUserName(pet.fromUser);
-          completedAvatars.push(getAvatarFallback(fromUserName));
-        }
-      }
-
-      return {
-        id: questType,
-        text: getQuestText(questType),
-        points: getQuestPoints(questType),
-        completed: isCompleted,
-        counter,
-        avatars: completedAvatars.length > 0 ? completedAvatars : undefined,
-      };
+      seenTypes.add(task.questType);
+      return true;
     });
   }, [pet]);
 
   useEffect(() => {
-    console.log("useEffect");
+    document.body.style.background = `linear-gradient(180deg, #${stateSad || stateCold ? "C9C6D9" : linearGradientAccentColors[currentSlide]} 0%, #f8f8f8 100%)`;
+  }, [stateSad, stateCold, currentSlide]);
 
-    backButton.mount();
-    backButton.show();
-    backButton.onClick(() => {
-      navigate("/streaks");
-    });
+  useEffect(() => {
+    try {
+      backButton.mount();
+      backButton.show();
+      backButton.onClick(() => {
+        navigate("/streaks");
+      });
+    } catch (error: unknown) {
+      console.warn("Failed to mount back button:", error);
+    }
   }, [navigate, pet]);
 
   if (isLoading) {
@@ -177,7 +166,7 @@ export const StreakPage = () => {
     return (
       <div className={styles.error}>
         <Typography variant="textXlBold">Ошибка загрузки</Typography>
-        <Typography variant="textSm">
+        <Typography variant="textXs">
           Не удалось загрузить данные питомца
         </Typography>
       </div>
@@ -192,13 +181,6 @@ export const StreakPage = () => {
     );
   }
 
-  const currentExp = pet.exp;
-  const expForNextLevel = pet.expForNextLevel;
-  const progressValue = expForNextLevel > 0 ? currentExp : 0;
-  const progressMax = expForNextLevel;
-  const remainingPoints = progressMax - progressValue;
-  const petName = pet.name || "Питомец";
-
   return (
     <div
       className={styles.page}
@@ -210,62 +192,262 @@ export const StreakPage = () => {
           <Typography variant="textMd" className={styles.streakLabel}>
             Дней стрика
           </Typography>
-          <Typography variant="displayXsBold" className={styles.streakNumber}>
+          <Typography
+            variant="displayLgSemibold"
+            className={styles.streakNumber}
+          >
             {pet.streakCount}
           </Typography>
         </div>
         <div className={styles.avatars}>
-          {avatars.map((avatar, index) => (
-            <img
-              key={index}
-              src={avatar}
-              alt={`Avatar ${index + 1}`}
-              className={styles.avatar}
-            />
-          ))}
+          <img
+            src={
+              pet.toUser.avatarUrl || getAvatarFallback(pet.toUser.firstName)
+            }
+            alt={`Avatar ${pet.toUser.firstName}`}
+            className={styles.avatar}
+            style={{
+              border: `2px solid #${stateSad || stateCold ? "C9C6D9" : linearGradientAccentColors[currentSlide]}`,
+              zIndex: 1,
+            }}
+          />
+          <img
+            src={
+              pet.fromUser.avatarUrl ||
+              getAvatarFallback(pet.fromUser.firstName)
+            }
+            alt={`Avatar ${pet.fromUser.firstName}`}
+            className={styles.avatar}
+          />
         </div>
       </div>
 
+      {stateCold && (
+        <div className={styles.cold}>
+          <img
+            src={coldPetImages[pet.level - 1]}
+            alt="Cold Pet"
+            className={styles.coldPet}
+          />
+
+          <div className={styles.coldContent}>
+            <Typography
+              className={styles.coldContentTitle}
+              variant="displayXsSemibold"
+            >
+              Ваша серия закончилась!
+            </Typography>
+            {pet.streakRestoreCount < 3 ||
+            (pet.streakRestoreUpdatedAt &&
+              pet.streakRestoreUpdatedAt.getMonth() !==
+                new Date().getMonth()) ? (
+              <>
+                <Typography variant="textMd" className={styles.coldContentText}>
+                  Восстановление доступно <span>48 часов</span>
+                </Typography>
+                <Typography variant="textMd" className={styles.coldContentText}>
+                  Еще{" "}
+                  <span>
+                    {pet.streakRestoreUpdatedAt &&
+                    pet.streakRestoreUpdatedAt.getMonth() !==
+                      new Date().getMonth()
+                      ? 3
+                      : 3 - pet.streakRestoreCount}{" "}
+                    восстановления
+                  </span>{" "}
+                  в этом месяце
+                </Typography>
+              </>
+            ) : (
+              <Typography variant="textMd" className={styles.coldContentText}>
+                Пишите 3 дня друг другу, чтобы вырастить нового Серийчика
+              </Typography>
+            )}
+          </div>
+
+          {pet.streakRestoreCount < 3 ||
+          (pet.streakRestoreUpdatedAt &&
+            pet.streakRestoreUpdatedAt.getMonth() !== new Date().getMonth()) ? (
+            <Button
+              onClick={() => restoreStreak({ chatId: chatId || "" })}
+              disabled={isRestoringStreak}
+            >
+              Восстановить
+            </Button>
+          ) : (
+            <div />
+          )}
+        </div>
+      )}
+
       {/* Pet Section */}
-      <PetSection
-        petName={petName}
-        petLevel={pet.level}
-        progressValue={progressValue}
-        progressMax={progressMax}
-        remainingPoints={remainingPoints}
-      />
+      {!stateCold && (
+        <PetSection
+          pet={pet}
+          currentSlide={currentSlide}
+          setCurrentSlide={setCurrentSlide}
+        />
+      )}
 
       {/* Tasks Card */}
-      <div className={styles.tasksCard}>
-        <Typography variant="textLgBold" className={styles.tasksTitle}>
-          Вырасти питомца
-        </Typography>
-        <ul className={styles.tasksList}>
-          {tasks.map((task) => (
-            <li key={task.id} className={styles.taskItem}>
-              <CheckMark
-                width={42}
-                height={42}
-                className={`${styles.taskIcon} ${task.completed ? styles.completed : styles.incomplete}`}
-              />
-              <div className={styles.taskContent}>
-                <Typography
-                  variant="textMdSemibold"
-                  className={styles.taskText}
+      {!stateCold && (
+        <div className={styles.tasksCard}>
+          <Typography variant="textLgBold" className={styles.tasksTitle}>
+            Вырасти питомца
+          </Typography>
+          <ul className={styles.tasksList}>
+            {tasks.map((task) => (
+              <li key={task.id} className={styles.taskItem}>
+                <svg
+                  width="42"
+                  height="42"
+                  viewBox="0 0 42 42"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  {task.text}
-                </Typography>
-                <Typography variant="textMd" className={styles.taskPoints}>
-                  <span className={styles.taskPointsNumber}>
-                    +{task.points}
-                  </span>{" "}
-                  exp
-                </Typography>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+                  <path
+                    d="M10.8717 35.5614C7.7913 35.5614 6.35156 34.1049 6.35156 31.0246V27.442C6.35156 27.1239 6.25112 26.8895 6.01674 26.6551L3.48884 24.1105C1.3125 21.9342 1.29576 19.8917 3.48884 17.7154L6.01674 15.1708C6.25112 14.9364 6.35156 14.702 6.35156 14.3839V10.8013C6.35156 7.6875 7.7913 6.26451 10.8717 6.26451H14.4542C14.7891 6.26451 15.0234 6.16406 15.2578 5.94643L17.8025 3.41853C19.9788 1.22545 22.0045 1.20871 24.1975 3.40179L26.7422 5.94643C26.9766 6.1808 27.2109 6.26451 27.529 6.26451H31.1116C34.192 6.26451 35.6484 7.72098 35.6484 10.8013V14.3839C35.6484 14.702 35.7321 14.9196 35.9665 15.1708L38.4944 17.7154C40.6708 19.8917 40.6875 21.9342 38.4944 24.1105L35.9665 26.6551C35.7321 26.8895 35.6484 27.1239 35.6484 27.442V31.0246C35.6484 34.1049 34.192 35.5614 31.1116 35.5614H27.529C27.2109 35.5614 26.9766 35.6451 26.7422 35.8795L24.1975 38.4074C22.0212 40.5837 19.9788 40.6004 17.8025 38.4074L15.2578 35.8795C15.0067 35.6451 14.7891 35.5614 14.4542 35.5614H10.8717Z"
+                    fill={
+                      usersByQuestType[task.questType].some(
+                        (user) => user.counter !== task.target
+                      )
+                        ? "var(--surface-default)"
+                        : taskIconColors[currentSlide]
+                    }
+                  />
+                  <path
+                    d="M27.6667 16L18.5 25.1667L14.3333 21"
+                    stroke={
+                      usersByQuestType[task.questType].some(
+                        (user) => user.counter !== task.target
+                      )
+                        ? "var(--text-second)"
+                        : accentColors[currentSlide]
+                    }
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+
+                <div className={styles.taskContent}>
+                  <Typography
+                    variant="textMdSemibold"
+                    className={styles.taskText}
+                  >
+                    {task.text}
+                  </Typography>
+                  <div className={styles.taskPointsContainer}>
+                    <Typography variant="textMd" className={styles.taskPoints}>
+                      <span
+                        style={{
+                          color: stateSad
+                            ? "#C9C6D9"
+                            : accentColors[currentSlide],
+                        }}
+                      >
+                        +{task.points}
+                      </span>{" "}
+                      очк{task.points > 1 ? "а" : "о"} опыта
+                    </Typography>
+                    {usersByQuestType[task.questType].some(
+                      (user) => user.counter !== task.target
+                    ) && (
+                      <div className={styles.avatarProgressContainer}>
+                        {usersByQuestType[task.questType].map((user, index) => (
+                          <div
+                            key={index}
+                            className={styles.taskAvatarContainer}
+                          >
+                            {user.counter !== task.target &&
+                              user.counter > 0 && (
+                                <Typography
+                                  variant="textXs"
+                                  className={styles.taskAvatarText}
+                                >
+                                  {user.counter}
+                                </Typography>
+                              )}
+                            <img
+                              style={{
+                                opacity: user.counter === task.target ? 0.4 : 1,
+                              }}
+                              src={
+                                user.avatarUrl ||
+                                getAvatarFallback(user.firstName)
+                              }
+                              alt={`Avatar ${index + 1}`}
+                              className={styles.taskAvatar}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {!stateCold && (
+        <div className={styles.badge}>
+          <Typography variant="textLgBold">Бейдж</Typography>
+          <div className={styles.badgeContent}>
+            <div className={styles.badgeItem}>
+              <img
+                src={allBadges[0]}
+                alt="Badge"
+                className={styles.badgeImage}
+              />
+              <Typography className={styles.badgeItemText} variant="textSm">
+                3д
+              </Typography>
+            </div>
+            <div className={styles.badgeItem}>
+              <img
+                src={pet.streakCount >= 10 ? allBadges[1] : noBadges[1]}
+                alt="Badge"
+                className={styles.badgeImage}
+              />
+              <Typography className={styles.badgeItemText} variant="textSm">
+                10д
+              </Typography>
+            </div>
+            <div className={styles.badgeItem}>
+              <img
+                src={pet.streakCount >= 30 ? allBadges[2] : noBadges[2]}
+                alt="Badge"
+                className={styles.badgeImage}
+              />
+              <Typography className={styles.badgeItemText} variant="textSm">
+                30д
+              </Typography>
+            </div>
+            <div className={styles.badgeItem}>
+              <img
+                src={pet.streakCount >= 100 ? allBadges[3] : noBadges[3]}
+                alt="Badge"
+                className={styles.badgeImage}
+              />
+              <Typography className={styles.badgeItemText} variant="textSm">
+                100д
+              </Typography>
+            </div>
+            <div className={styles.badgeItem}>
+              <img
+                src={pet.streakCount >= 200 ? allBadges[4] : noBadges[4]}
+                alt="Badge"
+                className={styles.badgeImage}
+              />
+              <Typography className={styles.badgeItemText} variant="textSm">
+                200д
+              </Typography>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

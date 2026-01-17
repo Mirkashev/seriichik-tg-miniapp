@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  padding: 32px 16px 0;
+  padding: 32px 16px 48px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -10,7 +10,6 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
 }
 
 .streakCounter {
@@ -39,7 +38,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 2px solid var(--background-default, #ffffff);
+  // border: 2px solid var(--background-default, #ffffff);
   object-fit: cover;
 
   &:not(:first-child) {
@@ -47,10 +46,16 @@
   }
 }
 
+.avatarToUser {
+  width: 46px;
+  height: 46px;
+  z-index: 1;
+}
+
 .tasksCard {
   background: var(--background-default, #ffffff);
-  border-radius: 16px 16px 0 0;
-  padding: 18px 16px 32px;
+  border-radius: 16px;
+  padding: 18px 16px;
   margin-top: auto;
   display: flex;
   flex-direction: column;
@@ -61,7 +66,6 @@
   color: var(--text-main, #000000);
   font-size: 18px;
   font-weight: 700;
-  margin-bottom: 16px;
 }
 
 .tasksList {
@@ -108,10 +112,6 @@
   color: var(--text-second);
 }
 
-.taskPointsNumber {
-  color: var(--orange-900);
-}
-
 .loading,
 .error {
   display: flex;
@@ -120,4 +120,114 @@
   justify-content: center;
   min-height: 100vh;
   padding: 16px;
+}
+
+.badge {
+  margin-top: 16px;
+  background: var(--background-default, #ffffff);
+  border-radius: 16px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.badgeContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badgeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.badgeImage {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+}
+
+.badgeItemText {
+  color: var(--text-second);
+}
+
+.taskPointsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.avatarProgressContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.taskAvatarContainer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.taskAvatarText {
+  color: var(--text-second);
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--surface-default);
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  border: 1px solid var(--background-default);
+  z-index: 1;
+}
+
+.taskAvatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cold {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.coldPet {
+  width: 295px;
+  height: 255px;
+  object-fit: cover;
+}
+
+.coldContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.coldContentTitle {
+  margin-bottom: 20px;
+}
+
+.coldContentText {
+  color: var(--text-second);
+  text-align: center;
+
+  span {
+    color: var(--text-main);
+  }
 }

@@ -22,6 +22,7 @@ class HttpClient {
       baseURL,
       headers: {
         "Content-Type": "application/json",
+        "X-Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
     });
 

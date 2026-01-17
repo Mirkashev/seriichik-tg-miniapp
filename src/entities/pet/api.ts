@@ -11,6 +11,14 @@ export interface ChangePetNameResponse {
   success: boolean;
 }
 
+export interface RestoreStreakRequest {
+  chatId: string;
+}
+
+export interface RestoreStreakResponse {
+  success: boolean;
+}
+
 export const petApi = {
   getPet: async (chatId: string): Promise<Pet> => {
     const response = await httpClient.get<PetResponseDTO>('/pet', {
@@ -22,5 +30,10 @@ export const petApi = {
     request: ChangePetNameRequest
   ): Promise<ChangePetNameResponse> => {
     return httpClient.post<ChangePetNameResponse>('/pet/change-name', request);
+  },
+  restoreStreak: async (
+    request: RestoreStreakRequest
+  ): Promise<RestoreStreakResponse> => {
+    return httpClient.post<RestoreStreakResponse>('/restore', request);
   },
 };

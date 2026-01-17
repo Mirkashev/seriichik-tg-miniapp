@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from "react";
 import styles from "./ProgressBar.module.scss";
+import { Typography } from "../Typography/Typography";
 
 export interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
   value: number;
@@ -37,9 +38,9 @@ export const ProgressBar = ({
           aria-valuemax={max}
         >
           {showLabel && labelPosition === "inside" && (
-            <span className={styles.labelInside}>
+            <Typography variant="textSmSemibold" className={styles.labelInside}>
               {value} / {max}
-            </span>
+            </Typography>
           )}
         </div>
       </div>

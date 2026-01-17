@@ -11,7 +11,7 @@ export default defineConfig(({ command }) => {
     return {
       server: {
         host: "localhost",
-        // allowedHosts: ["866ac3ffef11.ngrok-free.app"],
+        // allowedHosts: ["14ed6005c7b7.ngrok-free.app"],
         proxy: {
           "/api": {
             target: "http://localhost:3000",

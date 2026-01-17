@@ -134,7 +134,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .partnerHeader {
@@ -223,4 +223,41 @@
 
 .modalButton {
   margin-top: 8px;
+}
+
+.searchModalContent {
+  background-color: var(--background-default);
+  border-radius: 0;
+  height: 100vh;
+}
+
+.searchModalHeader {
+  width: 100%;
+  padding: 12px 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.searchModalCloseButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+}
+
+.searchModalBody {
+  padding: 4px 16px 16px;
+}
+
+.searchModalLoader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
 }

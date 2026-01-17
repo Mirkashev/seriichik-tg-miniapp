@@ -1,4 +1,4 @@
-export { usePet, useChangePetName, petKeys } from "./queries";
+export { usePet, useChangePetName, useRestoreStreak, petKeys } from "./queries";
 export type { Pet, PetResponseDTO, User, Quest } from "./model";
-export type { ChangePetNameRequest, ChangePetNameResponse } from "./api";
+export type { ChangePetNameRequest, ChangePetNameResponse, RestoreStreakRequest, RestoreStreakResponse } from "./api";
 export { QuestType } from "./model";

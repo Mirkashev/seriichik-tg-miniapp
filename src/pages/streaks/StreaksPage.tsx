@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useLaunchParams,
@@ -11,7 +11,7 @@ import type { Partner } from "@/entities/partner";
 import { Button } from "@/shared/ui/Button";
 import { Typography } from "@/shared/ui/Typography";
 import { Loader } from "@/shared/ui/Loader";
-import { getAvatarFallback } from "@/shared/utils/telegramPhoto";
+import { getAvatarFallback } from "@/shared/utils/helpers/telegramPhoto";
 import { BeforeStreakPremium } from "./ui/BeforeStreakPremium";
 import { BeforeStreakNoPremium } from "./ui/BeforeStreakNoPremium";
 import HelpIcon from "@/assets/icons/question.svg?svgr";
@@ -23,24 +23,31 @@ import ChevronRightIcon from "@/assets/icons/chevron-right.svg?svgr";
 import { isIOS } from "react-device-detect";
 import { Modal } from "@/shared/ui/Modal";
 import seriichikIncoming from "@/assets/images/seriichik-incoming.png";
+import { useMe, useUpdateTimezone } from "@/entities/user";
+import { BeforeStreakPremiumConnected } from "./ui/BeforeStreakPremiumConnected";
+import { useSearchPartners } from "@/entities/partner/queries";
+
+const text =
+  "👋 Привет! Присоединяйся к Серийчик Боту!\n\nЯ помогу тебе отслеживать серии общения и развивать виртуального пета.";
+
+const textNoPremium =
+  "👋 Привет! У есть тебя премиум подписка? Давай вместе растить серийчика!";
 
 export const StreaksPage = () => {
   const navigate = useNavigate();
   const launchParams = useLaunchParams(true);
   const user = launchParams.tgWebAppData?.user;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const ref = useRef<HTMLInputElement>(null);
 
-  console.log(isIOS);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const [isNoPremiumModalOpen, setIsNoPremiumModalOpen] = useState(false);
+
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const [search, setSearch] = useState("");
-  // TODO: добавить отдельную модалку для поиска
   const debouncedSearch = useDebounce(search, 500);
-  console.log(debouncedSearch);
-
-  const [showState, setShowState] = useState<
-    "before-streak-premium" | "before-streak-no-premium" | "streaks" | null
-  >(null);
 
   const isPremium = user?.isPremium;
 
@@ -52,6 +59,18 @@ export const StreaksPage = () => {
     isLoading,
     error,
   } = usePartners(20);
+
+  const { data: searchData, isLoading: isSearchLoading } = useSearchPartners(
+    20,
+    debouncedSearch
+  );
+
+  const { data: userData, isLoading: isUserDataLoading } = useMe();
+  const { mutate: updateTimezone } = useUpdateTimezone();
+
+  const searchPartners = useMemo(() => {
+    return searchData?.pages.flatMap((page) => page.partners) ?? [];
+  }, [searchData]);
 
   const partners = useMemo(() => {
     return data?.pages.flatMap((page) => page.partners) ?? [];
@@ -97,13 +116,13 @@ export const StreaksPage = () => {
   };
 
   const handleCopyBotUsername = () => {
-    navigator.clipboard.writeText("@serichikbot");
+    navigator.clipboard.writeText(import.meta.env.VITE_BOT_NAME);
   };
 
-  const handleInviteFriend = () => {
+  const handleInviteFriend = (text: string) => () => {
     // TODO: после появления запроса на получение данных юзера добавить 2 новые модалки
-    const text = "Привет! Давай заведем серийчика!";
-    const botUrl = "@testMirkBot";
+
+    const botUrl = `https://t.me/${import.meta.env.VITE_BOT_NAME}`;
 
     // TODO: проверить работу на винде, возможно там будет работать нативно
     const isDesktop =
@@ -111,12 +130,11 @@ export const StreaksPage = () => {
       (navigator.userAgent.includes("Mac") &&
         !navigator.userAgent.includes("Mobile"));
 
+    // TODO: добавить в модалку инлайн кнопку с редиректом на бота
     if (isDesktop) {
       // На десктопе открываем share ссылку в новом окне браузера
-      const encodedText = encodeURIComponent(text);
-      const encodedUrl = encodeURIComponent(
-        `https://t.me/${botUrl.replace("@", "")}`
-      );
+      const encodedText = encodeURIComponent("\n" + text);
+      const encodedUrl = encodeURIComponent(botUrl);
       const shareLink = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
 
       // Открываем в новом окне браузера
@@ -128,21 +146,68 @@ export const StreaksPage = () => {
     shareURL(botUrl, text);
   };
 
+  const handleOpenPremiumModal = () => {
+    setIsPremiumModalOpen(true);
+  };
+
+  const handleOpenNoPremiumModal = () => {
+    setIsNoPremiumModalOpen(true);
+  };
+
+  const handleCloseSearchModal = () => {
+    setSearchModalOpen(false);
+    setSearch("");
+  };
+
   const handleVideoInstructions = () => {
     // TODO: Implement video instructions
   };
 
   useEffect(() => {
     if (partners.length > 0) {
-      postEvent("web_app_set_background_color", { color: "#ffffff" });
-      postEvent("web_app_set_header_color", { color: "#ffffff" });
-      backButton.mount();
-      backButton.hide();
+      try {
+        postEvent("web_app_set_background_color", { color: "#ffffff" });
+        postEvent("web_app_set_header_color", { color: "#ffffff" });
+        backButton.mount();
+        backButton.hide();
+      } catch (error: unknown) {
+        console.warn("Failed to set background color:", error);
+      }
     }
   }, [partners]);
 
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, [searchModalOpen]);
+
+  useEffect(() => {
+    if (userData) {
+      const browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      // Проверяем, нужно ли обновлять таймзону
+      if (userData.timeZone !== browserTimeZone) {
+        // Если есть дата последнего обновления, проверяем прошло ли 48 часов
+        if (userData.timeZoneUpdatedAt) {
+          const lastUpdated = new Date(userData.timeZoneUpdatedAt);
+          const hoursSinceUpdate =
+            (Date.now() - lastUpdated.getTime()) / (1000 * 60 * 60);
+
+          // Обновляем только если прошло >= 48 часов
+          if (hoursSinceUpdate >= 48) {
+            updateTimezone();
+          }
+        } else {
+          // Если даты нет (первый раз), обновляем сразу
+          updateTimezone();
+        }
+      }
+    }
+  }, [userData, updateTimezone]);
+
   // Loading state
-  if (isLoading) {
+  if (isLoading || isUserDataLoading) {
     return (
       <div className={styles.page}>
         <Loader />
@@ -159,46 +224,27 @@ export const StreaksPage = () => {
     );
   }
 
-  // Empty states (before partners appear) - original logic
   if (partners.length === 0) {
     if (isPremium) {
+      if (userData?.isBotOwner) {
+        return (
+          <BeforeStreakPremiumConnected
+            onInviteFriend={handleInviteFriend(text)}
+          />
+        );
+      }
+
       return (
         <BeforeStreakPremium
           onCopyBotUsername={handleCopyBotUsername}
           onVideoInstructions={handleVideoInstructions}
-          onSwitchToNoPremium={() => setShowState("before-streak-no-premium")}
-          onSwitchToStreaks={() => setShowState("streaks")}
         />
       );
     }
 
     return (
       <BeforeStreakNoPremium
-        onInviteFriend={handleInviteFriend}
-        onSwitchToPremium={() => setShowState("before-streak-premium")}
-        onSwitchToStreaks={() => setShowState("streaks")}
-      />
-    );
-  }
-
-  // Test mode: render based on showState if manually set
-  if (showState === "before-streak-premium") {
-    return (
-      <BeforeStreakPremium
-        onCopyBotUsername={handleCopyBotUsername}
-        onVideoInstructions={handleVideoInstructions}
-        onSwitchToNoPremium={() => setShowState("before-streak-no-premium")}
-        onSwitchToStreaks={() => setShowState(null)}
-      />
-    );
-  }
-
-  if (showState === "before-streak-no-premium") {
-    return (
-      <BeforeStreakNoPremium
-        onInviteFriend={handleInviteFriend}
-        onSwitchToPremium={() => setShowState("before-streak-premium")}
-        onSwitchToStreaks={() => setShowState(null)}
+        onInviteFriend={handleInviteFriend(textNoPremium)}
       />
     );
   }
@@ -213,8 +259,10 @@ export const StreaksPage = () => {
             src={seriichikIncoming}
             alt="Серийчик"
           />
-          <Typography variant="textXlBold">Серийчик скоро вылупится</Typography>
-          <Typography className={styles.modalText} variant="textLg">
+          <Typography variant="displayXsSemibold">
+            Серийчик скоро вылупится
+          </Typography>
+          <Typography className={styles.modalText} variant="textMd">
             Общайтесь 3 дня подряд, чтобы начать серию и смотрите как из яйца
             выплупится Серийчик
           </Typography>
@@ -226,6 +274,187 @@ export const StreaksPage = () => {
           >
             Понятно
           </Button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isPremiumModalOpen}
+        onClose={() => setIsPremiumModalOpen(false)}
+      >
+        <div className={styles.modalContent}>
+          <img
+            className={styles.modalImage}
+            src={seriichikIncoming}
+            alt="Премиум"
+          />
+          <Typography variant="displayXsSemibold">
+            Серийчик с друзьями
+          </Typography>
+          <Typography className={styles.modalText} variant="textMd">
+            Чтобы расти Серийчика вместе с друзьями, подключи бота к Telegram
+            Business
+          </Typography>
+          <Button
+            className={styles.modalButton}
+            onClick={handleVideoInstructions}
+          >
+            Как подключить?
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isNoPremiumModalOpen}
+        onClose={() => setIsNoPremiumModalOpen(false)}
+      >
+        <div className={styles.modalContent}>
+          <img
+            className={styles.modalImage}
+            src={seriichikIncoming}
+            alt="Премиум"
+          />
+          <Typography variant="displayXsSemibold">
+            Хочешь завести серийчика?
+          </Typography>
+          <Typography className={styles.modalText} variant="textMd">
+            Создавать серию можно с Premium. Попроси друга с подпиской создать
+            серийчика с тобой!
+          </Typography>
+          <Button
+            className={styles.modalButton}
+            onClick={handleInviteFriend(textNoPremium)}
+          >
+            Позвать друга
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal isOpen={searchModalOpen} onClose={handleCloseSearchModal}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className={styles.searchModalContent}
+        >
+          <div className={styles.searchModalHeader}>
+            <button
+              className={styles.searchModalCloseButton}
+              onClick={handleCloseSearchModal}
+            >
+              <ChevronRightIcon
+                style={{ transform: "rotate(180deg)" }}
+                width={20}
+                height={20}
+              />
+            </button>
+            <Typography variant="displayXsBold">Поиск</Typography>
+          </div>
+
+          <div className={styles.searchModalBody}>
+            <Input
+              iconLeft={<SearchIcon width={20} height={20} />}
+              name="search-partners"
+              placeholder="Имя или юзернейм"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              ref={ref}
+            />
+            <div className={styles.searchModalResults}>
+              {isSearchLoading && (
+                <div className={styles.searchModalLoader}>
+                  <Loader />
+                </div>
+              )}
+
+              {!isSearchLoading && (
+                <div className={styles.listContainer} style={{ marginTop: 16 }}>
+                  {searchPartners.length === 0 ? (
+                    <div className={styles.emptyList}>
+                      <Typography variant="textLgSemibold">
+                        Ничего не нашли
+                      </Typography>
+                    </div>
+                  ) : (
+                    <ul className={styles.partnersList}>
+                      {searchPartners.map((partner) => {
+                        const partnerName = getPartnerName(partner);
+                        const secondaryText = getSecondaryText(partner);
+                        const streakEmoji = getStreakEmoji(partner.streakCount);
+                        const streakColor = getStreakColor(partner.streakCount);
+                        const avatarUrl =
+                          partner.toUserPhotoUrl ||
+                          getAvatarFallback(partnerName);
+
+                        return (
+                          <li
+                            key={partner.chatId}
+                            className={styles.partnerItem}
+                            onClick={() => {
+                              if (partner.pet)
+                                return navigate(`/streak/${partner.chatId}`);
+
+                              setIsModalOpen(true);
+                            }}
+                          >
+                            <div className={styles.partnerAvatar}>
+                              <img
+                                src={avatarUrl}
+                                alt={partnerName}
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = getAvatarFallback(partnerName);
+                                }}
+                              />
+                            </div>
+                            <div className={styles.partnerInfo}>
+                              <div className={styles.partnerHeader}>
+                                <Typography
+                                  variant="textMdSemibold"
+                                  className={styles.partnerName}
+                                  title={partnerName}
+                                >
+                                  {partnerName.length > 20
+                                    ? `${partnerName.slice(0, 20)}...`
+                                    : partnerName}
+                                </Typography>
+                                {partner.streakCount > 0 && (
+                                  <div
+                                    className={styles.streakIndicator}
+                                    style={{ color: streakColor }}
+                                  >
+                                    <span>{streakEmoji}</span>
+                                    <span>{partner.streakCount}</span>
+                                  </div>
+                                )}
+                              </div>
+                              {secondaryText && (
+                                <Typography
+                                  variant="textMd"
+                                  className={styles.secondaryText}
+                                >
+                                  {secondaryText}
+                                </Typography>
+                              )}
+                            </div>
+                            <ChevronRightIcon width={20} height={20} />
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                  {hasNextPage && (
+                    <div className={styles.loadMoreContainer}>
+                      <Button
+                        onClick={() => fetchNextPage()}
+                        disabled={isFetchingNextPage}
+                        variant="secondary"
+                      >
+                        {isFetchingNextPage ? "Загрузка..." : "Загрузить еще"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </Modal>
       {/* Header */}
@@ -242,42 +471,16 @@ export const StreaksPage = () => {
         </button>
       </div>
 
-      {/* Test buttons */}
-      <div
-        style={{
-          padding: "8px 16px",
-          display: "flex",
-          gap: "8px",
-          position: "fixed",
-          top: "128px",
-          left: "0",
-          right: "0",
-          zIndex: 100,
-        }}
-      >
-        <Button
-          variant="secondary"
-          onClick={() => setShowState("before-streak-premium")}
-          style={{ fontSize: "12px", padding: "4px 8px" }}
-        >
-          → Premium
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => setShowState("before-streak-no-premium")}
-          style={{ fontSize: "12px", padding: "4px 8px" }}
-        >
-          → No Premium
-        </Button>
-      </div>
-
       <div className={styles.inputWrapper}>
         <Input
           iconLeft={<SearchIcon width={20} height={20} />}
           name="search-partners"
           placeholder="Имя или юзернейм"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onClick={() => setSearchModalOpen(true)}
+          value={""}
+          onFocus={(e) => {
+            e.target.blur();
+          }}
         />
       </div>
 
@@ -286,7 +489,7 @@ export const StreaksPage = () => {
         {partners.length === 0 ? (
           <div className={styles.emptyList}>
             <Typography
-              variant="textSm"
+              variant="textXs"
               style={{ color: "var(--text-second)" }}
             >
               Нет стриков
@@ -340,9 +543,7 @@ export const StreaksPage = () => {
                           style={{ color: streakColor }}
                         >
                           <span>{streakEmoji}</span>
-                          <Typography variant="textSmSemibold">
-                            {partner.streakCount}
-                          </Typography>
+                          <span>{partner.streakCount}</span>
                         </div>
                       )}
                     </div>
@@ -376,7 +577,17 @@ export const StreaksPage = () => {
 
       {/* Fixed bottom button */}
       <div className={styles.bottomButton}>
-        <Button onClick={handleInviteFriend}>Позвать друзей</Button>
+        <Button
+          onClick={
+            isPremium && !userData?.isBotOwner
+              ? handleOpenPremiumModal
+              : !isPremium
+                ? handleOpenNoPremiumModal
+                : handleInviteFriend(isPremium ? text : textNoPremium)
+          }
+        >
+          Предложить серию
+        </Button>
       </div>
     </div>
   );

@@ -5,6 +5,13 @@ export interface MeResponseDTO {
   username?: string;
   avatarUrl?: string;
   isBotOwner: boolean;
+  timeZone?: string | null;
+  timeZoneUpdatedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface UpdateTimezoneResponseDTO {
+  success: boolean;
+  timeZone: string;
 }

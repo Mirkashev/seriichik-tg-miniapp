@@ -10,15 +10,11 @@ import { isIOS } from "react-device-detect";
 interface BeforeStreakPremiumProps {
   onCopyBotUsername: () => void;
   onVideoInstructions: () => void;
-  onSwitchToNoPremium: () => void;
-  onSwitchToStreaks: () => void;
 }
 
 export const BeforeStreakPremium = ({
   onCopyBotUsername,
   onVideoInstructions,
-  onSwitchToNoPremium,
-  onSwitchToStreaks,
 }: BeforeStreakPremiumProps) => {
   return (
     <div
@@ -26,13 +22,13 @@ export const BeforeStreakPremium = ({
       style={{ paddingTop: isIOS ? "100px" : "24px" }}
     >
       <div className={styles.premiumGuide}>
-        <Typography variant="textXlBold" className={styles.guideTitle}>
+        <Typography variant="displayXsSemibold" className={styles.guideTitle}>
           Как завести серийчика?
         </Typography>
         {/* Step 1 */}
         <div className={styles.stepCard}>
           <div className={styles.stepNumber}>
-            <Typography variant="textSm">1</Typography>
+            <Typography variant="textXs">1</Typography>
           </div>
           <div className={styles.stepContent}>
             <Typography variant="textMdSemibold" className={styles.stepText}>
@@ -44,7 +40,7 @@ export const BeforeStreakPremium = ({
         {/* Step 2 */}
         <div className={styles.stepCard}>
           <div className={styles.stepNumber}>
-            <Typography variant="textSm">2</Typography>
+            <Typography variant="textXs">2</Typography>
           </div>
           <div className={styles.stepContent}>
             <Typography variant="textMdSemibold" className={styles.stepText}>
@@ -57,7 +53,7 @@ export const BeforeStreakPremium = ({
         {/* Step 3 */}
         <div className={styles.stepCard}>
           <div className={styles.stepNumber}>
-            <Typography variant="textSm">3</Typography>
+            <Typography variant="textXs">3</Typography>
           </div>
           <div className={styles.stepContent}>
             <Typography variant="textMdSemibold" className={styles.stepText}>
@@ -70,7 +66,7 @@ export const BeforeStreakPremium = ({
         {/* Step 4 */}
         <div className={styles.stepCard}>
           <div className={styles.stepNumber}>
-            <Typography variant="textSm">4</Typography>
+            <Typography variant="textXs">4</Typography>
           </div>
           <div className={styles.stepContent}>
             <Typography variant="textMdSemibold" className={styles.stepText}>
@@ -78,7 +74,7 @@ export const BeforeStreakPremium = ({
             </Typography>
             <div className={styles.botInput}>
               <Typography variant="textMd" className={styles.botUsername}>
-                @serichikbot
+                @{import.meta.env.VITE_BOT_NAME}
               </Typography>
               <button
                 className={styles.copyIcon}
@@ -97,35 +93,6 @@ export const BeforeStreakPremium = ({
 
       <div className={styles.actions}>
         <Button onClick={onVideoInstructions}>Видео инструкция</Button>
-      </div>
-
-      {/* Test buttons */}
-      <div
-        style={{
-          padding: "8px 16px",
-          display: "flex",
-          gap: "8px",
-          position: "fixed",
-          top: "128px",
-          left: "0",
-          right: "0",
-          zIndex: 100,
-        }}
-      >
-        <Button
-          variant="secondary"
-          onClick={onSwitchToNoPremium}
-          style={{ fontSize: "12px", padding: "4px 8px" }}
-        >
-          → No Premium
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={onSwitchToStreaks}
-          style={{ fontSize: "12px", padding: "4px 8px" }}
-        >
-          → Streaks
-        </Button>
       </div>
     </div>
   );

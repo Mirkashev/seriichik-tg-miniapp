@@ -6,6 +6,8 @@ export interface User {
   isBotOwner: boolean;
   createdAt: Date;
   updatedAt: Date;
+  avatarUrl?: string;
+  timeZone?: string | null;
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -43,6 +45,9 @@ export interface PetResponseDTO {
   fromUser: User;
   streakCount: number;
   quests: Quest[];
+  streakLastIncrementAt: Date;
+  streakRestoreCount: number;
+  streakRestoreUpdatedAt: Date | null;
 }
 
 export interface Pet {
@@ -58,6 +63,9 @@ export interface Pet {
   fromUser: User;
   streakCount: number;
   quests: Quest[];
+  streakLastIncrementAt: Date;
+  streakRestoreCount: number;
+  streakRestoreUpdatedAt: Date | null;
 }
 
 export const mapPetFromDTO = (dto: PetResponseDTO): Pet => ({
@@ -66,6 +74,7 @@ export const mapPetFromDTO = (dto: PetResponseDTO): Pet => ({
   level: dto.level,
   exp: dto.exp,
   expForNextLevel: dto.expForNextLevel,
+  streakLastIncrementAt: new Date(dto.streakLastIncrementAt),
   createdAt: new Date(dto.createdAt),
   updatedAt: new Date(dto.updatedAt),
   name: dto.name,
@@ -80,6 +89,10 @@ export const mapPetFromDTO = (dto: PetResponseDTO): Pet => ({
     updatedAt: new Date(dto.fromUser.updatedAt),
   },
   streakCount: dto.streakCount,
+  streakRestoreCount: dto.streakRestoreCount,
+  streakRestoreUpdatedAt: dto.streakRestoreUpdatedAt
+    ? new Date(dto.streakRestoreUpdatedAt)
+    : null,
   quests: dto.quests.map((quest) => ({
     ...quest,
     createdAt: new Date(quest.createdAt),

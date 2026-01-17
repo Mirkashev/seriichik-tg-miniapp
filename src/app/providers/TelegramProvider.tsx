@@ -5,8 +5,11 @@ import { viewport, init, swipeBehavior, postEvent } from "@tma.js/sdk";
 interface TelegramProviderProps {
   children: ReactNode;
 }
-
-init();
+try {
+  init();
+} catch (error: unknown) {
+  console.warn("Failed to initialize Telegram SDK:", error);
+}
 
 export const TelegramProvider = ({ children }: TelegramProviderProps) => {
   useEffect(() => {

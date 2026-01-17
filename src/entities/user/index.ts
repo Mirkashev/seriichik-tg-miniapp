@@ -1,2 +1,2 @@
-export { useMe, userKeys } from "./queries";
-export type { MeResponseDTO } from "./model";
+export { useMe, useUpdateTimezone, userKeys } from "./queries";
+export type { MeResponseDTO, UpdateTimezoneResponseDTO } from "./model";

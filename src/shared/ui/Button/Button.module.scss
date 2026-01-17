@@ -1,6 +1,6 @@
 .button {
   width: 100%;
-  padding: 14px 0;
+  padding: 12px 0;
   border-radius: 12px;
   border: none;
   cursor: pointer;
@@ -18,7 +18,7 @@
 }
 
 .main:disabled {
-  background-color: var(--action-pressed);
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .secondary:disabled {
-  background-color: var(--surface-default);
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
