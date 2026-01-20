@@ -104,6 +104,7 @@ export const StreaksPage = () => {
   };
 
   const getSecondaryText = (partner: Partner): string => {
+    console.log(partner);
     if (partner.pet?.name) {
       return partner.pet.name;
     }

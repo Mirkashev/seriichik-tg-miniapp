@@ -35,6 +35,14 @@ const coldPetImages = [coldPet, coldPet2, coldPet3, coldPet4, coldPet5];
 
 import { getTodayStart } from "@/shared/utils/helpers/getTodayStart";
 import { Button } from "@/shared/ui/Button";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isSameOrAfter);
 
 const allBadges = [badge1, badge2, badge3, badge4, badge5];
 const noBadges = ["", noBadge2, noBadge3, noBadge4, noBadge5];
@@ -87,15 +95,30 @@ export const StreakPage = () => {
   const { mutateAsync: restoreStreak, isPending: isRestoringStreak } =
     useRestoreStreak();
 
-  const todayStart = getTodayStart(pet?.fromUser.timeZone);
+  const timeZone = pet?.fromUser.timeZone;
+  const todayStart = getTodayStart(timeZone);
+  const yesterdayStart = dayjs(todayStart).subtract(1, "day").toDate();
 
+  console.log(
+    pet?.quests
+  );
+
+  // Получаем текущее время в часовом поясе пользователя
+  const nowInUserTz = timeZone
+    ? dayjs().tz(timeZone)
+    : dayjs.utc();
+
+  // stateSad - если streakLastIncrementAt был вчера
   const stateSad =
-    pet && todayStart.getTime() > pet.streakLastIncrementAt.getTime();
+    pet &&
+    dayjs(pet.streakLastIncrementAt).isSameOrAfter(yesterdayStart) &&
+    dayjs(pet.streakLastIncrementAt).isBefore(todayStart);
 
+  // stateCold - если streakLastIncrementAt был вчера и прошло больше 24 часов
   const stateCold =
     pet &&
-    todayStart.getTime() - pet.streakLastIncrementAt.getTime() >
-      48 * 60 * 60 * 1000;
+    stateSad &&
+    nowInUserTz.diff(dayjs(pet.streakLastIncrementAt), "hour") > 24;
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -238,8 +261,8 @@ export const StreakPage = () => {
               Ваша серия закончилась!
             </Typography>
             {pet.streakRestoreCount < 3 ||
-            (pet.streakRestoreUpdatedAt &&
-              pet.streakRestoreUpdatedAt.getMonth() !==
+              (pet.streakRestoreUpdatedAt &&
+                pet.streakRestoreUpdatedAt.getMonth() !==
                 new Date().getMonth()) ? (
               <>
                 <Typography variant="textMd" className={styles.coldContentText}>
@@ -249,7 +272,7 @@ export const StreakPage = () => {
                   Еще{" "}
                   <span>
                     {pet.streakRestoreUpdatedAt &&
-                    pet.streakRestoreUpdatedAt.getMonth() !==
+                      pet.streakRestoreUpdatedAt.getMonth() !==
                       new Date().getMonth()
                       ? 3
                       : 3 - pet.streakRestoreCount}{" "}
@@ -266,8 +289,8 @@ export const StreakPage = () => {
           </div>
 
           {pet.streakRestoreCount < 3 ||
-          (pet.streakRestoreUpdatedAt &&
-            pet.streakRestoreUpdatedAt.getMonth() !== new Date().getMonth()) ? (
+            (pet.streakRestoreUpdatedAt &&
+              pet.streakRestoreUpdatedAt.getMonth() !== new Date().getMonth()) ? (
             <Button
               onClick={() => restoreStreak({ chatId: chatId || "" })}
               disabled={isRestoringStreak}
@@ -353,36 +376,36 @@ export const StreakPage = () => {
                     {usersByQuestType[task.questType].some(
                       (user) => user.counter !== task.target
                     ) && (
-                      <div className={styles.avatarProgressContainer}>
-                        {usersByQuestType[task.questType].map((user, index) => (
-                          <div
-                            key={index}
-                            className={styles.taskAvatarContainer}
-                          >
-                            {user.counter !== task.target &&
-                              user.counter > 0 && (
-                                <Typography
-                                  variant="textXs"
-                                  className={styles.taskAvatarText}
-                                >
-                                  {user.counter}
-                                </Typography>
-                              )}
-                            <img
-                              style={{
-                                opacity: user.counter === task.target ? 0.4 : 1,
-                              }}
-                              src={
-                                user.avatarUrl ||
-                                getAvatarFallback(user.firstName)
-                              }
-                              alt={`Avatar ${index + 1}`}
-                              className={styles.taskAvatar}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                        <div className={styles.avatarProgressContainer}>
+                          {usersByQuestType[task.questType].map((user, index) => (
+                            <div
+                              key={index}
+                              className={styles.taskAvatarContainer}
+                            >
+                              {user.counter !== task.target &&
+                                user.counter > 0 && (
+                                  <Typography
+                                    variant="textXs"
+                                    className={styles.taskAvatarText}
+                                  >
+                                    {user.counter}
+                                  </Typography>
+                                )}
+                              <img
+                                style={{
+                                  opacity: user.counter === task.target ? 0.4 : 1,
+                                }}
+                                src={
+                                  user.avatarUrl ||
+                                  getAvatarFallback(user.firstName)
+                                }
+                                alt={`Avatar ${index + 1}`}
+                                className={styles.taskAvatar}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                   </div>
                 </div>
               </li>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { Typography } from "@/shared/ui/Typography";
@@ -91,6 +91,10 @@ export const PetSection = ({
 
   const petImages = getPetImages(petLevel, stateSad);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+
+
   const [isChangeNameModalOpen, setIsChangeNameModalOpen] = useState(false);
   const [newPetName, setNewPetName] = useState(petName);
 
@@ -134,6 +138,20 @@ export const PetSection = ({
     },
   });
 
+  useEffect(() => {
+    const inputRefVar = inputRef?.current;
+
+    if (isChangeNameModalOpen && inputRefVar) {
+      inputRefVar?.focus();
+    }
+
+    return () => {
+      if (inputRefVar) {
+        inputRefVar?.blur();
+      }
+    };
+  }, [isChangeNameModalOpen]);
+
   return (
     <div className={styles.petSection}>
       <Modal
@@ -148,6 +166,7 @@ export const PetSection = ({
             Смена имени
           </Typography>
           <Input
+            ref={inputRef}
             className={styles.modalInput}
             placeholder="Введите новое имя"
             maxLength={20}
@@ -177,9 +196,8 @@ export const PetSection = ({
         {loaded && (
           <>
             <button
-              className={`${styles.arrow} ${styles.arrowLeft} ${
-                currentSlide === 0 ? styles.arrowDisabled : ""
-              }`}
+              className={`${styles.arrow} ${styles.arrowLeft} ${currentSlide === 0 ? styles.arrowDisabled : ""
+                }`}
               onClick={(e) => {
                 e.stopPropagation();
                 instanceRef.current?.prev();
@@ -193,9 +211,8 @@ export const PetSection = ({
               <ChevronRightIcon width={24} height={24} />
             </button>
             <button
-              className={`${styles.arrow} ${styles.arrowRight} ${
-                currentSlide === totalSlides - 1 ? styles.arrowDisabled : ""
-              }`}
+              className={`${styles.arrow} ${styles.arrowRight} ${currentSlide === totalSlides - 1 ? styles.arrowDisabled : ""
+                }`}
               onClick={(e) => {
                 e.stopPropagation();
                 instanceRef.current?.next();
@@ -211,7 +228,7 @@ export const PetSection = ({
           </>
         )}
       </div>
-      <div className={styles.petNameContainer}>
+      <button onClick={() => setIsChangeNameModalOpen(true)} className={styles.petNameContainer}>
         <Typography
           variant="textLgSemibold"
           className={styles.petName}
@@ -219,13 +236,8 @@ export const PetSection = ({
         >
           {petName}
         </Typography>
-        <button
-          className={styles.editIcon}
-          onClick={() => setIsChangeNameModalOpen(true)}
-        >
-          <PencilIcon width={20} height={20} />
-        </button>
-      </div>
+        <PencilIcon width={20} height={20} />
+      </button>
       <div className={styles.progressSection}>
         <ProgressBar
           value={progressValue}
