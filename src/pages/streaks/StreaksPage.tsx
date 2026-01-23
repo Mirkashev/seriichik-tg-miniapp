@@ -20,7 +20,7 @@ import { Input } from "@/shared/ui/Input";
 import { useDebounce } from "@/shared/utils/hooks/useDebounce";
 import SearchIcon from "@/assets/icons/search.svg?svgr";
 import ChevronRightIcon from "@/assets/icons/chevron-right.svg?svgr";
-import { isIOS } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { Modal } from "@/shared/ui/Modal";
 import seriichikIncoming from "@/assets/images/seriichik-incoming.png";
 import { useMe, useUpdateTimezone } from "@/entities/user";
@@ -252,7 +252,7 @@ export const StreaksPage = () => {
 
   // Main state with partners list
   return (
-    <div className={styles.mainPage} style={{ paddingTop: isIOS ? "82px" : 0 }}>
+    <div className={styles.mainPage} style={{ paddingTop: isMobile ? "82px" : 0 }}>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className={styles.modalContent}>
           <img
@@ -260,12 +260,12 @@ export const StreaksPage = () => {
             src={seriichikIncoming}
             alt="Серийчик"
           />
-          <Typography variant="displayXsSemibold">
+          <Typography className={styles.modalTitle} variant="displayXsSemibold">
             Серийчик скоро вылупится
           </Typography>
           <Typography className={styles.modalText} variant="textMd">
             Общайтесь 3 дня подряд, чтобы начать серию и смотрите как из яйца
-            выплупится Серийчик
+            вылупится Серийчик
           </Typography>
           <Button
             className={styles.modalButton}
@@ -334,6 +334,7 @@ export const StreaksPage = () => {
         <div
           onClick={(e) => e.stopPropagation()}
           className={styles.searchModalContent}
+          style={{ paddingTop: isMobile ? "82px" : 0 }}
         >
           <div className={styles.searchModalHeader}>
             <button

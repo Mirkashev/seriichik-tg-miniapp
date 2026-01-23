@@ -216,8 +216,13 @@
   top: -84px;
 }
 
+.modalTitle {
+  text-align: center;
+}
+
 .modalText {
   text-align: center;
+  color: var(--text-second);
 }
 
 .modalButton {

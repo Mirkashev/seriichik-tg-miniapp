@@ -1,11 +1,11 @@
 import { toast } from "sonner";
 import { Typography } from "@/shared/ui/Typography";
-import { Button } from "@/shared/ui/Button";
+// import { Button } from "@/shared/ui/Button";
 import styles from "./BeforeStreakPremium.module.scss";
 import CopyIcon from "@/assets/icons/copy.svg?svgr";
 import telegramBusinessImg from "@/assets/images/telegram-business.png";
 import botsImg from "@/assets/images/chat-bots.png";
-import { isIOS } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 interface BeforeStreakPremiumProps {
   onCopyBotUsername: () => void;
@@ -16,10 +16,11 @@ export const BeforeStreakPremium = ({
   onCopyBotUsername,
   onVideoInstructions,
 }: BeforeStreakPremiumProps) => {
+  console.log(onVideoInstructions);
   return (
     <div
       className={styles.page}
-      style={{ paddingTop: isIOS ? "100px" : "24px" }}
+      style={{ paddingTop: isMobile ? "100px" : "24px" }}
     >
       <div className={styles.premiumGuide}>
         <Typography variant="displayXsSemibold" className={styles.guideTitle}>
@@ -46,7 +47,7 @@ export const BeforeStreakPremium = ({
             <Typography variant="textMdSemibold" className={styles.stepText}>
               Нажми «Telegram для бизнеса»
             </Typography>
-            <img src={telegramBusinessImg} alt="Telegram для бизнеса" />
+            <img className={styles.telegramBusinessImg} src={telegramBusinessImg} alt="Telegram для бизнеса" />
           </div>
         </div>
 
@@ -59,7 +60,7 @@ export const BeforeStreakPremium = ({
             <Typography variant="textMdSemibold" className={styles.stepText}>
               Открой раздел «Чат-боты»
             </Typography>
-            <img src={botsImg} alt="Чат-боты" />
+            <img className={styles.botsImg} src={botsImg} alt="Чат-боты" />
           </div>
         </div>
 
@@ -72,27 +73,27 @@ export const BeforeStreakPremium = ({
             <Typography variant="textMdSemibold" className={styles.stepText}>
               Добавь этого бота
             </Typography>
-            <div className={styles.botInput}>
+            <button
+              onClick={() => {
+                onCopyBotUsername();
+                toast.success("Скопировано в буфер обмена", {
+                  icon: <CopyIcon width={20} height={20} />,
+                  id: "copy-toast"
+                });
+              }}
+              aria-label="Копировать" className={styles.botInput}>
               <Typography variant="textMd" className={styles.botUsername}>
                 @{import.meta.env.VITE_BOT_NAME}
               </Typography>
-              <button
-                className={styles.copyIcon}
-                onClick={() => {
-                  onCopyBotUsername();
-                  toast.success("Скопировано");
-                }}
-                aria-label="Копировать"
-              >
-                <CopyIcon width={16} height={16} />
-              </button>
-            </div>
+              <CopyIcon
+                className={styles.copyIcon} width={20} height={20} />
+            </button>
           </div>
         </div>
       </div>
 
       <div className={styles.actions}>
-        <Button onClick={onVideoInstructions}>Видео инструкция</Button>
+        {/* <Button onClick={onVideoInstructions}>Видео инструкция</Button> */}
       </div>
     </div>
   );

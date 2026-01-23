@@ -18,7 +18,7 @@ export const usePet = (chatId: string) => {
     queryKey: petKeys.byChatId(chatId),
     queryFn: () => petApi.getPet(chatId),
     enabled: !!chatId,
-    refetchInterval: 1000 * 60, // 1 minute
+    refetchInterval: 1000 * 15, // 15 seconds
   });
 };
 

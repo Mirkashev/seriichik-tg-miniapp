@@ -12,7 +12,12 @@ createRoot(document.getElementById("root")!).render(
     <TelegramProvider>
       <QueryProvider>
         <RouterProvider router={router} />
-        <Toaster />
+        <Toaster
+          position="top-center"
+          visibleToasts={3}
+          duration={3000}
+          expand={false}
+        />
       </QueryProvider>
     </TelegramProvider>
   </StrictMode>

@@ -2,7 +2,7 @@ import { Typography } from "@/shared/ui/Typography";
 import { Button } from "@/shared/ui/Button";
 import styles from "./BeforeStreakPremiumConnected.module.scss";
 import character from "@/assets/images/no-premium-pet.png";
-import { isIOS } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import HelpIcon from "@/assets/icons/question.svg?svgr";
 
 interface BeforeStreakNoPremiumProps {
@@ -15,7 +15,7 @@ export const BeforeStreakPremiumConnected = ({
   return (
     <div
       className={styles.page}
-      style={{ paddingTop: isIOS ? "100px" : "24px" }}
+      style={{ paddingTop: isMobile ? "100px" : "24px" }}
     >
       <div className={styles.header}>
         <Typography variant="displayXsBold">Серии</Typography>
