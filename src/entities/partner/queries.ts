@@ -28,6 +28,7 @@ export const usePartners = (limit: number = 20, searchText?: string) => {
       lastPage.pagination.hasNextPage
         ? lastPage.pagination.page + 1
         : undefined,
+    refetchInterval: 1000 * 15, // 15 seconds
   });
 };
 

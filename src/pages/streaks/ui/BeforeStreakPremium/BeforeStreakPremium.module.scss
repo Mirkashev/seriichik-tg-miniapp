@@ -48,6 +48,19 @@
   gap: 12px;
 }
 
+.telegramBusinessImg {
+  width: 275px;
+  height: 38.44px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.botsImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .stepText {
   color: var(--text-main);
   margin: 0;

@@ -6,7 +6,7 @@ import { Loader } from "@/shared/ui/Loader";
 import { PetSection } from "./ui/PetSection";
 import styles from "./StreakPage.module.scss";
 import { backButton } from "@tma.js/sdk-react";
-import { isIOS } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import {
   accentColors,
   linearGradientAccentColors,
@@ -98,10 +98,6 @@ export const StreakPage = () => {
   const timeZone = pet?.fromUser.timeZone;
   const todayStart = getTodayStart(timeZone);
   const yesterdayStart = dayjs(todayStart).subtract(1, "day").toDate();
-
-  console.log(
-    pet?.quests
-  );
 
   // Получаем текущее время в часовом поясе пользователя
   const nowInUserTz = timeZone
@@ -207,7 +203,7 @@ export const StreakPage = () => {
   return (
     <div
       className={styles.page}
-      style={{ paddingTop: isIOS ? "100px" : "24px" }}
+      style={{ paddingTop: isMobile ? "100px" : "24px" }}
     >
       {/* Header */}
       <div className={styles.header}>

@@ -22,3 +22,26 @@ body {
   margin: 0;
   background: linear-gradient(180deg, #ffd179 0%, #f8f8f8 100%);
 }
+
+/* Sonner toast styles */
+[data-sonner-toast][data-type="success"] {
+  width: calc(100% - 32px);
+  height: 56px;
+  border-radius: 8px;
+  opacity: 1;
+  background-color: var(--text-second);
+  color: var(--text-on);
+  display: flex;
+  align-items: center;
+  border: none;
+
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* Limit visible toasts to 3 */
+[data-sonner-toaster] > [data-sonner-toast]:nth-child(n+4) {
+  display: none !important;
+}

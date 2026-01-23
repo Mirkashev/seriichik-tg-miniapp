@@ -8,12 +8,18 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 a,
 a:link,
 a:visited {
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 a:hover {
@@ -82,6 +88,8 @@ input[type='submit'] {
   background-color: transparent;
   background: none;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 input:focus,
