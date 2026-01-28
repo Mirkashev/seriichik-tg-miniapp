@@ -25,11 +25,11 @@ export const PartnerItem = ({
   avatarUrl,
   onItemClick,
 }: PartnerItemProps) => {
-
   const [showAlert, setShowAlert] = useState(false);
+
   return (
     <li className={styles.partnerItem} onClick={onItemClick}>
-      {!partner.isActive && (
+      {!partner.isActiveChat && (
         <div className={styles.notActiveBadge}>
           <button
             className={styles.notActiveBadgeAction}
