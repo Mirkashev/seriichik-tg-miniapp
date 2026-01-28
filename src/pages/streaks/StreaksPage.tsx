@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useLaunchParams,
@@ -14,6 +14,7 @@ import { Loader } from "@/shared/ui/Loader";
 import { getAvatarFallback } from "@/shared/utils/helpers/telegramPhoto";
 import { BeforeStreakPremium } from "./ui/BeforeStreakPremium";
 import { BeforeStreakNoPremium } from "./ui/BeforeStreakNoPremium";
+import { PartnerItem } from "./ui/PartnerItem";
 import HelpIcon from "@/assets/icons/question.svg?svgr";
 import styles from "./StreaksPage.module.scss";
 import { Input } from "@/shared/ui/Input";
@@ -26,6 +27,12 @@ import seriichikIncoming from "@/assets/images/seriichik-incoming.png";
 import { useMe, useUpdateTimezone } from "@/entities/user";
 import { BeforeStreakPremiumConnected } from "./ui/BeforeStreakPremiumConnected";
 import { useSearchPartners } from "@/entities/partner/queries";
+
+import StreakImgNoPet from '@/assets/images/badges/no-pet.png'
+import StreakImgFirst from '@/assets/images/badges/1.png'
+import StreakImgSecond from '@/assets/images/badges/2.png'
+import StreakImgThird from '@/assets/images/badges/3.png'
+
 
 const text =
   "👋 Привет! Присоединяйся к Серийчик Боту!\n\nЯ помогу тебе отслеживать серии общения и развивать виртуального пета.";
@@ -86,21 +93,17 @@ export const StreaksPage = () => {
   };
 
   const getStreakEmoji = (count: number): string => {
-    if (count >= 200) return "🔥";
-    if (count >= 100) return "🔥";
-    if (count >= 30) return "🔥";
-    if (count >= 10) return "🔥";
-    if (count >= 4) return "🔥";
-    return "🤔";
+    console.log(count)
+    if (count > 100) return StreakImgThird;
+    if (count > 30) return StreakImgSecond;
+    if (count > 2) return StreakImgFirst;
+    return StreakImgNoPet
   };
 
   const getStreakColor = (count: number): string => {
-    if (count >= 200) return "#FF69B4"; // pink
-    if (count >= 100) return "#FF69B4"; // pink
-    if (count >= 30) return "#FF0000"; // red
-    if (count >= 10) return "#FF8C00"; // orange
-    if (count >= 4) return "#FFD700"; // yellow
-    return "#808080"; // gray
+    if (count > 100) return "#D841A5";
+    if (count > 30) return "#F15C1E";
+    return "#FB8A0E";
   };
 
   const getSecondaryText = (partner: Partner): string => {
@@ -351,14 +354,17 @@ export const StreaksPage = () => {
           </div>
 
           <div className={styles.searchModalBody}>
-            <Input
-              iconLeft={<SearchIcon width={20} height={20} />}
-              name="search-partners"
-              placeholder="Имя или юзернейм"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              ref={ref}
-            />
+            <div className={styles.searchModalInput}>
+              <Input
+                iconLeft={<SearchIcon width={20} height={20} />}
+                name="search-partners"
+                placeholder="Имя или юзернейм"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                ref={ref}
+              />
+            </div>
+
             <div className={styles.searchModalResults}>
               {isSearchLoading && (
                 <div className={styles.searchModalLoader}>
@@ -386,58 +392,20 @@ export const StreaksPage = () => {
                           getAvatarFallback(partnerName);
 
                         return (
-                          <li
+                          <PartnerItem
                             key={partner.chatId}
-                            className={styles.partnerItem}
-                            onClick={() => {
+                            partner={partner}
+                            partnerName={partnerName}
+                            secondaryText={secondaryText}
+                            streakEmoji={streakEmoji}
+                            streakColor={streakColor}
+                            avatarUrl={avatarUrl}
+                            onItemClick={() => {
                               if (partner.pet)
                                 return navigate(`/streak/${partner.chatId}`);
-
                               setIsModalOpen(true);
                             }}
-                          >
-                            <div className={styles.partnerAvatar}>
-                              <img
-                                src={avatarUrl}
-                                alt={partnerName}
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement;
-                                  target.src = getAvatarFallback(partnerName);
-                                }}
-                              />
-                            </div>
-                            <div className={styles.partnerInfo}>
-                              <div className={styles.partnerHeader}>
-                                <Typography
-                                  variant="textMdSemibold"
-                                  className={styles.partnerName}
-                                  title={partnerName}
-                                >
-                                  {partnerName.length > 20
-                                    ? `${partnerName.slice(0, 20)}...`
-                                    : partnerName}
-                                </Typography>
-                                {partner.streakCount > 0 && (
-                                  <div
-                                    className={styles.streakIndicator}
-                                    style={{ color: streakColor }}
-                                  >
-                                    <span>{streakEmoji}</span>
-                                    <span>{partner.streakCount}</span>
-                                  </div>
-                                )}
-                              </div>
-                              {secondaryText && (
-                                <Typography
-                                  variant="textMd"
-                                  className={styles.secondaryText}
-                                >
-                                  {secondaryText}
-                                </Typography>
-                              )}
-                            </div>
-                            <ChevronRightIcon width={20} height={20} />
-                          </li>
+                          />
                         );
                       })}
                     </ul>
@@ -508,58 +476,19 @@ export const StreaksPage = () => {
                 partner.toUserPhotoUrl || getAvatarFallback(partnerName);
 
               return (
-                <li
+                <PartnerItem
                   key={partner.chatId}
-                  className={styles.partnerItem}
-                  onClick={() => {
-                    if (partner.pet)
-                      return navigate(`/streak/${partner.chatId}`);
-
+                  partner={partner}
+                  partnerName={partnerName}
+                  secondaryText={secondaryText}
+                  streakEmoji={streakEmoji}
+                  streakColor={streakColor}
+                  avatarUrl={avatarUrl}
+                  onItemClick={() => {
+                    if (partner.pet) return navigate(`/streak/${partner.chatId}`);
                     setIsModalOpen(true);
                   }}
-                >
-                  <div className={styles.partnerAvatar}>
-                    <img
-                      src={avatarUrl}
-                      alt={partnerName}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = getAvatarFallback(partnerName);
-                      }}
-                    />
-                  </div>
-                  <div className={styles.partnerInfo}>
-                    <div className={styles.partnerHeader}>
-                      <Typography
-                        variant="textMdSemibold"
-                        className={styles.partnerName}
-                        title={partnerName}
-                      >
-                        {partnerName.length > 20
-                          ? `${partnerName.slice(0, 20)}...`
-                          : partnerName}
-                      </Typography>
-                      {partner.streakCount > 0 && (
-                        <div
-                          className={styles.streakIndicator}
-                          style={{ color: streakColor }}
-                        >
-                          <span>{streakEmoji}</span>
-                          <span>{partner.streakCount}</span>
-                        </div>
-                      )}
-                    </div>
-                    {secondaryText && (
-                      <Typography
-                        variant="textMd"
-                        className={styles.secondaryText}
-                      >
-                        {secondaryText}
-                      </Typography>
-                    )}
-                  </div>
-                  <ChevronRightIcon width={20} height={20} />
-                </li>
+                />
               );
             })}
           </ul>

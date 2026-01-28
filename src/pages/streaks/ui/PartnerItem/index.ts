@@ -1,0 +1,1 @@
+export { PartnerItem } from "./PartnerItem";

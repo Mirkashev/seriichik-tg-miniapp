@@ -13,6 +13,7 @@ export interface PartnerResponseDTO {
   };
   streakCount: number;
   isApplied: boolean;
+  isActive: boolean;
 }
 
 export interface PaginationInfo {
@@ -44,6 +45,7 @@ export interface Partner {
   };
   streakCount: number;
   isApplied: boolean;
+  isActive: boolean;
 }
 
 export const mapPartnerFromDTO = (dto: PartnerResponseDTO): Partner => ({
@@ -57,6 +59,7 @@ export const mapPartnerFromDTO = (dto: PartnerResponseDTO): Partner => ({
   pet: dto.pet,
   streakCount: dto.streakCount,
   isApplied: dto.isApplied,
+  isActive: dto.isActive
 });
 
 export interface PartnersPageResponse {

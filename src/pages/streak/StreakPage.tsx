@@ -39,6 +39,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import { getStreakState } from "@/shared/utils/helpers/getStreakState";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -97,24 +98,16 @@ export const StreakPage = () => {
 
   const timeZone = pet?.fromUser.timeZone;
   const todayStart = getTodayStart(timeZone);
-  const yesterdayStart = dayjs(todayStart).subtract(1, "day").toDate();
 
-  // Получаем текущее время в часовом поясе пользователя
-  const nowInUserTz = timeZone
-    ? dayjs().tz(timeZone)
-    : dayjs.utc();
+  const petState = getStreakState(pet?.streakLastIncrementAt ?? new Date(), todayStart, pet?.streakCount ?? 0)
 
   // stateSad - если streakLastIncrementAt был вчера
   const stateSad =
-    pet &&
-    dayjs(pet.streakLastIncrementAt).isSameOrAfter(yesterdayStart) &&
-    dayjs(pet.streakLastIncrementAt).isBefore(todayStart);
+    petState === 'sad';
 
   // stateCold - если streakLastIncrementAt был вчера и прошло больше 24 часов
   const stateCold =
-    pet &&
-    stateSad &&
-    nowInUserTz.diff(dayjs(pet.streakLastIncrementAt), "hour") > 24;
+    petState === "cold";
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
