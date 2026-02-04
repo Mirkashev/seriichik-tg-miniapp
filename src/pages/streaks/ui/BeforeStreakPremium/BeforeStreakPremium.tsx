@@ -90,6 +90,21 @@ export const BeforeStreakPremium = ({
             </button>
           </div>
         </div>
+
+        {/* Step 5 */}
+        <div className={styles.stepCard}>
+          <div className={styles.stepNumber}>
+            <Typography variant="textXs">5</Typography>
+          </div>
+          <div className={styles.stepContent}>
+            <Typography variant="textMdSemibold" className={styles.stepText}>
+              Напиши другу
+            </Typography>
+            <Typography variant="textMd" className={styles.stepDescription}>
+              После отправки сообщения другу ему придет сообщение от бизнес-бота с предложением растить серийчика вместе
+            </Typography>
+          </div>
+        </div>
       </div>
 
       <div className={styles.actions}>
