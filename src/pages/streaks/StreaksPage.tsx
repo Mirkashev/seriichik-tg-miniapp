@@ -136,13 +136,14 @@ export const StreaksPage = () => {
 
     // TODO: добавить в модалку инлайн кнопку с редиректом на бота
     if (isDesktop) {
-      // На десктопе открываем share ссылку в новом окне браузера
-      const encodedText = encodeURIComponent("\n" + text);
-      const encodedUrl = encodeURIComponent(botUrl);
-      const shareLink = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
-
-      // Открываем в новом окне браузера
-      window.open(shareLink, "_blank", "noopener,noreferrer");
+      try {
+        const encodedText = encodeURIComponent("\n" + sanitizeUtf16(text));
+        const encodedUrl = encodeURIComponent(sanitizeUtf16(botUrl));
+        const shareLink = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+        window.open(shareLink, "_blank", "noopener,noreferrer");
+      } catch {
+        window.open(`https://t.me/${import.meta.env.VITE_BOT_NAME}`, "_blank");
+      }
       return;
     }
 
