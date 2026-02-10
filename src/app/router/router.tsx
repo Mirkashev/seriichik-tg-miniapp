@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { StreaksPage } from "@/pages/streaks/StreaksPage";
 import { StreakPage } from "@/pages/streak/StreakPage";
+import { TestPage } from "@/pages/test/TestPage";
 
 export const router = createBrowserRouter(
   [
@@ -11,6 +12,10 @@ export const router = createBrowserRouter(
     {
       path: "/streak/:chatId",
       element: <StreakPage />,
+    },
+    {
+      path: "/test",
+      element: <TestPage />,
     },
     {
       path: "/",

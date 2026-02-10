@@ -12,6 +12,7 @@ import { Button } from "@/shared/ui/Button";
 import { Typography } from "@/shared/ui/Typography";
 import { Loader } from "@/shared/ui/Loader";
 import { getAvatarFallback } from "@/shared/utils/helpers/telegramPhoto";
+import { sanitizeUtf16 } from "@/shared/utils/helpers/sanitizeUtf16";
 import { BeforeStreakPremium } from "./ui/BeforeStreakPremium";
 import { BeforeStreakNoPremium } from "./ui/BeforeStreakNoPremium";
 import { PartnerItem } from "./ui/PartnerItem";
@@ -85,15 +86,16 @@ export const StreaksPage = () => {
 
   const getPartnerName = (partner: Partner) => {
     if (partner.toUserFirstName || partner.toUserLastName) {
-      return [partner.toUserFirstName, partner.toUserLastName]
-        .filter(Boolean)
-        .join(" ");
+      return sanitizeUtf16(
+        [partner.toUserFirstName, partner.toUserLastName]
+          .filter(Boolean)
+          .join(" ")
+      );
     }
-    return partner.toUserUsername || "Unknown";
+    return sanitizeUtf16(partner.toUserUsername) || "Unknown";
   };
 
   const getStreakEmoji = (count: number): string => {
-    console.log(count)
     if (count > 100) return StreakImgThird;
     if (count > 30) return StreakImgSecond;
     if (count > 2) return StreakImgFirst;
@@ -107,15 +109,13 @@ export const StreaksPage = () => {
   };
 
   const getSecondaryText = (partner: Partner): string => {
-    console.log(partner);
     if (partner.pet?.name) {
-      return partner.pet.name;
+      return sanitizeUtf16(partner.pet.name);
     }
 
     if (partner.streakCount < 3) {
       return "Пет появится на 3-ий день";
     }
-    // Можно добавить другие статусы
     return "";
   };
 

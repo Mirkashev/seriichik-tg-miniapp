@@ -13,6 +13,7 @@ import {
   taskIconColors,
 } from "@/shared/consts";
 import { getAvatarFallback } from "@/shared/utils/helpers/telegramPhoto";
+import { sanitizeUtf16 } from "@/shared/utils/helpers/sanitizeUtf16";
 
 import badge1 from "@/assets/images/badges/1.png";
 import badge2 from "@/assets/images/badges/2.png";
@@ -216,7 +217,7 @@ export const StreakPage = () => {
             src={
               pet.toUser.avatarUrl || getAvatarFallback(pet.toUser.firstName)
             }
-            alt={`Avatar ${pet.toUser.firstName}`}
+            alt={`Avatar ${sanitizeUtf16(pet.toUser.firstName)}`}
             className={styles.avatar}
             style={{
               border: `2px solid #${stateSad || stateCold ? "C9C6D9" : linearGradientAccentColors[currentSlide]}`,
@@ -228,7 +229,7 @@ export const StreakPage = () => {
               pet.fromUser.avatarUrl ||
               getAvatarFallback(pet.fromUser.firstName)
             }
-            alt={`Avatar ${pet.fromUser.firstName}`}
+            alt={`Avatar ${sanitizeUtf16(pet.fromUser.firstName)}`}
             className={styles.avatar}
           />
         </div>
@@ -388,7 +389,7 @@ export const StreakPage = () => {
                                   user.avatarUrl ||
                                   getAvatarFallback(user.firstName)
                                 }
-                                alt={`Avatar ${index + 1}`}
+                                alt={`Avatar ${sanitizeUtf16(user.firstName) || index + 1}`}
                                 className={styles.taskAvatar}
                               />
                             </div>
