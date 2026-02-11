@@ -22,7 +22,7 @@ import { Input } from "@/shared/ui/Input";
 import { useDebounce } from "@/shared/utils/hooks/useDebounce";
 import SearchIcon from "@/assets/icons/search.svg?svgr";
 import ChevronRightIcon from "@/assets/icons/chevron-right.svg?svgr";
-import { isMobile } from "react-device-detect";
+import { isMobile, osName } from "react-device-detect";
 import { Modal } from "@/shared/ui/Modal";
 import seriichikIncoming from "@/assets/images/seriichik-incoming.png";
 import { useMe, useUpdateTimezone } from "@/entities/user";
@@ -33,6 +33,7 @@ import StreakImgNoPet from '@/assets/images/badges/no-pet.png'
 import StreakImgFirst from '@/assets/images/badges/1.png'
 import StreakImgSecond from '@/assets/images/badges/2.png'
 import StreakImgThird from '@/assets/images/badges/3.png'
+
 
 
 const text =
@@ -167,6 +168,21 @@ export const StreaksPage = () => {
   const handleVideoInstructions = () => {
     // TODO: Implement video instructions
   };
+
+  useEffect(() => {
+    // Открытие приложения
+    try {
+      ym(106770151, 'app_opened', {
+        source: {
+          id: user?.id,
+          platform: osName,
+        }
+      });
+    } catch (error) {
+      console.log(error)
+    }
+
+  }, [user?.id])
 
   useEffect(() => {
     if (partners.length > 0) {
@@ -524,3 +540,5 @@ export const StreaksPage = () => {
     </div>
   );
 };
+
+

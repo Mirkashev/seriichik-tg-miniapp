@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useKeenSlider } from "keen-slider/react";
+import { useKeenSlider, type KeenSliderHooks } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { Typography } from "@/shared/ui/Typography";
 import { ProgressBar } from "@/shared/ui/ProgressBar";
@@ -31,6 +31,7 @@ import { useChangePetName, type Pet } from "@/entities/pet";
 import { toast } from "sonner";
 import { accentColors, linearGradientAccentColors } from "@/shared/consts";
 import { getTodayStart } from "@/shared/utils/helpers/getTodayStart";
+import type { KeenSliderInstance } from "keen-slider";
 
 interface PetSectionProps {
   pet: Pet;
@@ -63,11 +64,26 @@ const getPetImages = (level: number, stateSad: boolean): string[] => {
   return images;
 };
 
+const setMiniAppBgColor = (stateSad: boolean, slider: KeenSliderInstance<unknown, unknown, KeenSliderHooks>) => {
+  try {
+    postEvent("web_app_set_background_color", {
+      color: `#f8f8f8`,
+    });
+    postEvent("web_app_set_header_color", {
+      color: `#${stateSad ? "C9C6D9" : linearGradientAccentColors[slider.track.details.rel]}`,
+    });
+  } catch (error: unknown) {
+    console.warn("Failed to set background color:", error);
+  }
+  document.body.style.background = `linear-gradient(180deg, #${stateSad ? "C9C6D9" : linearGradientAccentColors[slider.track.details.rel]} 0%, #f8f8f8 100%)`;
+}
+
 export const PetSection = ({
   pet,
   currentSlide,
   setCurrentSlide,
 }: PetSectionProps) => {
+
   const {
     chatId,
     level,
@@ -81,6 +97,8 @@ export const PetSection = ({
   } = pet;
   const progressValue = exp;
 
+
+
   const remainingPoints = expForNextLevel - exp;
   const petLevel = level;
   const petName = name;
@@ -92,8 +110,6 @@ export const PetSection = ({
   const petImages = getPetImages(petLevel, stateSad);
 
   const inputRef = useRef<HTMLInputElement>(null);
-
-
 
   const [isChangeNameModalOpen, setIsChangeNameModalOpen] = useState(false);
   const [newPetName, setNewPetName] = useState(petName);
@@ -119,22 +135,14 @@ export const PetSection = ({
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     initial: petLevel - 1,
     slideChanged(slider) {
+      setMiniAppBgColor(stateSad, slider)
       setCurrentSlide(slider.track.details.rel);
-      try {
-        postEvent("web_app_set_background_color", {
-          color: `#f8f8f8`,
-        });
-        postEvent("web_app_set_header_color", {
-          color: `#${stateSad ? "C9C6D9" : linearGradientAccentColors[slider.track.details.rel]}`,
-        });
-      } catch (error: unknown) {
-        console.warn("Failed to set background color:", error);
-      }
-      document.body.style.background = `linear-gradient(180deg, #${stateSad ? "C9C6D9" : linearGradientAccentColors[slider.track.details.rel]} 0%, #f8f8f8 100%)`;
     },
     created(slider) {
       setLoaded(true);
       setTotalSlides(slider.track.details.slides.length);
+      setMiniAppBgColor(stateSad, slider)
+      setCurrentSlide(slider?.track?.details?.rel)
     },
   });
 

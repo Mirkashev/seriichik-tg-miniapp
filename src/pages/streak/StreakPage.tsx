@@ -155,6 +155,7 @@ export const StreakPage = () => {
     document.body.style.background = `linear-gradient(180deg, #${stateSad || stateCold ? "C9C6D9" : linearGradientAccentColors[currentSlide]} 0%, #f8f8f8 100%)`;
   }, [stateSad, stateCold, currentSlide]);
 
+
   useEffect(() => {
     try {
       backButton.mount();
