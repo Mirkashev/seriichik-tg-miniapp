@@ -2,7 +2,7 @@ import { Typography } from "@/shared/ui/Typography";
 import { Button } from "@/shared/ui/Button";
 import styles from "./BeforeStreakNoPremium.module.scss";
 import character from "@/assets/images/no-premium-pet.png";
-import { isMobile, osName } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { useEffect } from "react";
 import { useLaunchParams } from "@tma.js/sdk-react";
 
@@ -17,20 +17,16 @@ export const BeforeStreakNoPremium = ({
   const user = launchParams.tgWebAppData?.user;
 
   useEffect(() => {
-    // Открытие приложения
     try {
-      ym(106770151, 'onboarding_started', {
-        source: {
-          id: user?.id,
-          platform: osName,
-          isPremium: user?.isPremium
-        }
+      ym(106770151, 'params', {
+        type: 'onboarding_started',
+        premium: user?.isPremium
       });
     } catch (error) {
       console.log(error)
     }
 
-  }, [user?.id, user?.isPremium])
+  }, [user?.isPremium])
 
   return (
     <div className={styles.page} style={{ paddingTop: isMobile ? "100px" : 0 }}>

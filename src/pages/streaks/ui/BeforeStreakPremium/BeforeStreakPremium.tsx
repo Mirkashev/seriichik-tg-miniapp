@@ -5,7 +5,7 @@ import styles from "./BeforeStreakPremium.module.scss";
 import CopyIcon from "@/assets/icons/copy.svg?svgr";
 import telegramBusinessImg from "@/assets/images/telegram-business.png";
 import botsImg from "@/assets/images/chat-bots.png";
-import { isMobile, osName } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { useEffect } from "react";
 import { useLaunchParams } from "@tma.js/sdk-react";
 
@@ -24,20 +24,15 @@ export const BeforeStreakPremium = ({
   const user = launchParams.tgWebAppData?.user;
 
   useEffect(() => {
-    // Открытие приложения
     try {
-      ym(106770151, 'onboarding_started', {
-        source: {
-          id: user?.id,
-          platform: osName,
-          isPremium: user?.isPremium
-        }
+      ym(106770151, 'params', {
+        type: 'onboarding_started',
+        premium: user?.isPremium
       });
     } catch (error) {
       console.log(error)
     }
-
-  }, [user?.id, user?.isPremium])
+  }, [user?.isPremium])
 
   return (
     <div
