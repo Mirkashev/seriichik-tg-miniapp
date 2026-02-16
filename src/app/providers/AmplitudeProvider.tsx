@@ -8,14 +8,19 @@ export const AmplitudeProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      amplitude.init(import.meta.env.VITE_AMPLITUDE_ID,
-        String(user.id),
-        {
-          autocapture: { sessions: true, pageViews: true }
-        }
-      );
+      try {
+        amplitude.init(import.meta.env.VITE_AMPLITUDE_ID,
+          String(user.id),
+          {
+            autocapture: { sessions: true, pageViews: true }
+          }
+        );
 
-      amplitude.track('app_opened', { is_premium: user.isPremium });
+        amplitude.track('app_opened', { is_premium: user.isPremium });
+      } catch (error) {
+        console.log(error)
+      }
+
     }
   }, [user])
 
