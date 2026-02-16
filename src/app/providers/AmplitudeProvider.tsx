@@ -7,7 +7,9 @@ export const AmplitudeProvider: FC<PropsWithChildren> = ({ children }) => {
   const user = launchParams.tgWebAppData?.user;
 
   useEffect(() => {
+    console.log('test')
     if (user) {
+      console.log('alo amplitude jebani')
       try {
         amplitude.init(import.meta.env.VITE_AMPLITUDE_ID,
           String(user.id),
