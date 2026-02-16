@@ -7,7 +7,7 @@ import telegramBusinessImg from "@/assets/images/telegram-business.png";
 import botsImg from "@/assets/images/chat-bots.png";
 import { isMobile } from "react-device-detect";
 import { useEffect } from "react";
-import { useLaunchParams } from "@tma.js/sdk-react";
+import * as amplitude from '@amplitude/analytics-browser';
 
 interface BeforeStreakPremiumProps {
   onCopyBotUsername: () => void;
@@ -20,19 +20,13 @@ export const BeforeStreakPremium = ({
 }: BeforeStreakPremiumProps) => {
   console.log(onVideoInstructions);
 
-  const launchParams = useLaunchParams(true);
-  const user = launchParams.tgWebAppData?.user;
-
   useEffect(() => {
     try {
-      ym(106770151, 'params', {
-        type: 'onboarding_started',
-        premium: user?.isPremium
-      });
+      amplitude.track('onboarding_started')
     } catch (error) {
       console.log(error)
     }
-  }, [user?.isPremium])
+  }, [])
 
   return (
     <div

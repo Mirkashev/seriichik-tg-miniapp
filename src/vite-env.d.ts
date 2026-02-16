@@ -46,7 +46,3 @@ type PolymorphicComponentWithRef<
   props: PolymorphicComponentPropsWithRef<E, Props>
 ) => ReactNode;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function ym(arg0: number, arg1: string, arg2?: Record<string, unknown> | string | number) {
-  throw new Error("Function not implemented.");
-}
