@@ -2,6 +2,8 @@
 
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;
+  /** DSN проекта Sentry (Client Keys). Нужен только для продакшена. */
+  readonly VITE_SENTRY_DSN?: string;
 }
 
 declare module "*.svg?svgr" {

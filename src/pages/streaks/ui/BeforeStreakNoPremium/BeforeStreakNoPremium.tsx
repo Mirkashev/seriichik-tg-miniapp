@@ -4,7 +4,7 @@ import styles from "./BeforeStreakNoPremium.module.scss";
 import character from "@/assets/images/no-premium-pet.png";
 import { isMobile } from "react-device-detect";
 import { useEffect } from "react";
-import * as amplitude from "@amplitude/analytics-browser"
+import { trackAmplitude } from "@/shared/analytics/track";
 
 interface BeforeStreakNoPremiumProps {
   onInviteFriend: () => void;
@@ -13,14 +13,9 @@ interface BeforeStreakNoPremiumProps {
 export const BeforeStreakNoPremium = ({
   onInviteFriend,
 }: BeforeStreakNoPremiumProps) => {
-
   useEffect(() => {
-    try {
-      amplitude.track('onboarding_started')
-    } catch (error) {
-      console.log(error)
-    }
-  }, [])
+    trackAmplitude("onboarding_started");
+  }, []);
 
   return (
     <div className={styles.page} style={{ paddingTop: isMobile ? "100px" : 0 }}>

@@ -1,18 +1,12 @@
-import { BeforeStreakPremium } from "@/pages/streaks/ui/BeforeStreakPremium";
+import { Button } from "@/shared/ui/Button";
 
 export const TestPage = () => {
-  const handleCopyBotUsername = () => {
-    navigator.clipboard.writeText(import.meta.env.VITE_BOT_NAME);
-  };
+  return <Button onClick={() => { throw new Error('test error') }}>click error</Button>
 
-  const handleVideoInstructions = () => {
-    // TODO: Implement video instructions
-  };
-
-  return (
-    <BeforeStreakPremium
-      onCopyBotUsername={handleCopyBotUsername}
-      onVideoInstructions={handleVideoInstructions}
-    />
-  );
+  // return (
+  //   <BeforeStreakPremium
+  //     onCopyBotUsername={handleCopyBotUsername}
+  //     onVideoInstructions={handleVideoInstructions}
+  //   />
+  // );
 };

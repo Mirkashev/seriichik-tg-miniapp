@@ -7,7 +7,7 @@ import telegramBusinessImg from "@/assets/images/telegram-business.png";
 import botsImg from "@/assets/images/chat-bots.png";
 import { isMobile } from "react-device-detect";
 import { useEffect } from "react";
-import * as amplitude from '@amplitude/analytics-browser';
+import { trackAmplitude } from "@/shared/analytics/track";
 
 interface BeforeStreakPremiumProps {
   onCopyBotUsername: () => void;
@@ -16,17 +16,11 @@ interface BeforeStreakPremiumProps {
 
 export const BeforeStreakPremium = ({
   onCopyBotUsername,
-  onVideoInstructions,
+  onVideoInstructions: _onVideoInstructions,
 }: BeforeStreakPremiumProps) => {
-  console.log(onVideoInstructions);
-
   useEffect(() => {
-    try {
-      amplitude.track('onboarding_started')
-    } catch (error) {
-      console.log(error)
-    }
-  }, [])
+    trackAmplitude("onboarding_started");
+  }, []);
 
   return (
     <div

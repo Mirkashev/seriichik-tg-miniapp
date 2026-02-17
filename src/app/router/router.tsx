@@ -1,25 +1,50 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import { StreaksPage } from "@/pages/streaks/StreaksPage";
-import { StreakPage } from "@/pages/streak/StreakPage";
-import { TestPage } from "@/pages/test/TestPage";
+import { Loader } from "@/shared/ui/Loader";
+
+const StreaksPage = lazy(() => import("@/pages/streaks/StreaksPage").then((m) => ({ default: m.StreaksPage })));
+const StreakPage = lazy(() => import("@/pages/streak/StreakPage").then((m) => ({ default: m.StreakPage })));
+const TestPage = lazy(() => import("@/pages/test/TestPage").then((m) => ({ default: m.TestPage })));
+
+const PageFallback = (
+  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+    <Loader />
+  </div>
+);
 
 export const router = createBrowserRouter(
   [
     {
       path: "/streaks",
-      element: <StreaksPage />,
+      element: (
+        <Suspense fallback={PageFallback}>
+          <StreaksPage />
+        </Suspense>
+      ),
     },
     {
       path: "/streak/:chatId",
-      element: <StreakPage />,
+      element: (
+        <Suspense fallback={PageFallback}>
+          <StreakPage />
+        </Suspense>
+      ),
     },
     {
       path: "/test",
-      element: <TestPage />,
+      element: (
+        <Suspense fallback={PageFallback}>
+          <TestPage />
+        </Suspense>
+      ),
     },
     {
       path: "/",
-      element: <StreaksPage />,
+      element: (
+        <Suspense fallback={PageFallback}>
+          <StreaksPage />
+        </Suspense>
+      ),
     },
   ],
   import.meta.env.VITE_IS_PROD

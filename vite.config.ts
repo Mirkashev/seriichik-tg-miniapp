@@ -4,6 +4,7 @@ import mkcert from "vite-plugin-mkcert";
 // @ts-expect-error - vite-plugin-eruda has typing issues with exports
 import eruda from "vite-plugin-eruda";
 import svgr from "vite-plugin-svgr";
+import { visualizer } from "rollup-plugin-visualizer";
 import path from "path";
 
 export default defineConfig(({ command, mode }) => {
@@ -37,7 +38,20 @@ export default defineConfig(({ command, mode }) => {
   } else {
     return {
       base: env.VITE_IS_PROD ? "/seriichik-tg-miniapp/" : "/",
-      plugins: [react(), svgr({ include: "**/*.svg?svgr" })],
+      // build: {
+      //   rollupOptions: {
+      //     output: {
+      //       manualChunks(id) {
+      //         if (id.includes("node_modules/@amplitude")) return "amplitude";
+      //       },
+      //     },
+      //   },
+      // },
+      plugins: [
+        react(),
+        svgr({ include: "**/*.svg?svgr" }),
+        visualizer({ open: false, gzipSize: true, filename: "dist/stats.html" }),
+      ],
       resolve: {
         alias: {
           "@": path.resolve(__dirname, "./src"),
