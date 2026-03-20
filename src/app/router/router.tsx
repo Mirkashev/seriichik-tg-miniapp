@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import { RootLayout } from "@/app/layout/RootLayout";
 import { Loader } from "@/shared/ui/Loader";
 
 const StreaksPage = lazy(() => import("@/pages/streaks/StreaksPage").then((m) => ({ default: m.StreaksPage })));
@@ -15,36 +16,42 @@ const PageFallback = (
 export const router = createBrowserRouter(
   [
     {
-      path: "/streaks",
-      element: (
-        <Suspense fallback={PageFallback}>
-          <StreaksPage />
-        </Suspense>
-      ),
-    },
-    {
-      path: "/streak/:chatId",
-      element: (
-        <Suspense fallback={PageFallback}>
-          <StreakPage />
-        </Suspense>
-      ),
-    },
-    {
-      path: "/test",
-      element: (
-        <Suspense fallback={PageFallback}>
-          <TestPage />
-        </Suspense>
-      ),
-    },
-    {
       path: "/",
-      element: (
-        <Suspense fallback={PageFallback}>
-          <StreaksPage />
-        </Suspense>
-      ),
+      element: <RootLayout />,
+      children: [
+        {
+          index: true,
+          element: (
+            <Suspense fallback={PageFallback}>
+              <StreaksPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "streaks",
+          element: (
+            <Suspense fallback={PageFallback}>
+              <StreaksPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "streak/:chatId",
+          element: (
+            <Suspense fallback={PageFallback}>
+              <StreakPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "test",
+          element: (
+            <Suspense fallback={PageFallback}>
+              <TestPage />
+            </Suspense>
+          ),
+        },
+      ],
     },
   ],
   import.meta.env.VITE_IS_PROD

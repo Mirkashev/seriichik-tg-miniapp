@@ -35,6 +35,7 @@ export interface Quest {
 export interface PetResponseDTO {
   id: string;
   chatId: string;
+  isBusinessNotificationAllowed?: boolean;
   level: number;
   exp: number;
   expForNextLevel: number;
@@ -53,6 +54,7 @@ export interface PetResponseDTO {
 export interface Pet {
   id: string;
   chatId: string;
+  isBusinessNotificationAllowed: boolean;
   level: number;
   exp: number;
   expForNextLevel: number;
@@ -71,6 +73,7 @@ export interface Pet {
 export const mapPetFromDTO = (dto: PetResponseDTO): Pet => ({
   id: dto.id,
   chatId: dto.chatId,
+  isBusinessNotificationAllowed: dto.isBusinessNotificationAllowed ?? true,
   level: dto.level,
   exp: dto.exp,
   expForNextLevel: dto.expForNextLevel,

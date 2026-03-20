@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { usePet, QuestType, type User, useRestoreStreak } from "@/entities/pet";
+import {
+  usePet,
+  QuestType,
+  type User,
+  useRestoreStreak,
+} from "@/entities/pet";
+import { useUpdateChatNotifications } from "@/entities/chat";
 import { Typography } from "@/shared/ui/Typography";
 import { Loader } from "@/shared/ui/Loader";
 import { PetSection } from "./ui/PetSection";
@@ -32,6 +38,8 @@ import coldPet3 from "@/assets/images/pets/cold-3.png";
 import coldPet4 from "@/assets/images/pets/cold-4.png";
 import coldPet5 from "@/assets/images/pets/cold-5.png";
 
+import streakPetSettingsImage from "@/assets/images/streak-pet-settings.png"
+
 const coldPetImages = [coldPet, coldPet2, coldPet3, coldPet4, coldPet5];
 
 import { getTodayStart } from "@/shared/utils/helpers/getTodayStart";
@@ -41,6 +49,9 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { getStreakState } from "@/shared/utils/helpers/getStreakState";
+import IconSettings from '@/assets/icons/settings.svg?svgr'
+import { Modal } from "@/shared/ui/Modal";
+import { Switch } from "@/shared/ui/Switch";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -96,6 +107,13 @@ export const StreakPage = () => {
 
   const { mutateAsync: restoreStreak, isPending: isRestoringStreak } =
     useRestoreStreak();
+
+  const {
+    mutate: updateChatNotifications,
+    isPending: isUpdatingChatNotifications,
+  } = useUpdateChatNotifications();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const timeZone = pet?.fromUser.timeZone;
   const todayStart = getTodayStart(timeZone);
@@ -206,6 +224,7 @@ export const StreakPage = () => {
           <Typography variant="textMd" className={styles.streakLabel}>
             Дней стрика
           </Typography>
+
           <Typography
             variant="displayLgSemibold"
             className={styles.streakNumber}
@@ -213,27 +232,33 @@ export const StreakPage = () => {
             {pet.streakCount}
           </Typography>
         </div>
-        <div className={styles.avatars}>
-          <img
-            src={
-              pet.toUser.avatarUrl || getAvatarFallback(pet.toUser.firstName)
-            }
-            alt={`Avatar ${sanitizeUtf16(pet.toUser.firstName)}`}
-            className={styles.avatar}
-            style={{
-              border: `2px solid #${stateSad || stateCold ? "C9C6D9" : linearGradientAccentColors[currentSlide]}`,
-              zIndex: 1,
-            }}
-          />
-          <img
-            src={
-              pet.fromUser.avatarUrl ||
-              getAvatarFallback(pet.fromUser.firstName)
-            }
-            alt={`Avatar ${sanitizeUtf16(pet.fromUser.firstName)}`}
-            className={styles.avatar}
-          />
+        <div className={styles.avatarsWrapper}>
+          <button onClick={() => setIsModalOpen(true)}>
+            <IconSettings />
+          </button>
+          <div className={styles.avatars}>
+            <img
+              src={
+                pet.toUser.avatarUrl || getAvatarFallback(pet.toUser.firstName)
+              }
+              alt={`Avatar ${sanitizeUtf16(pet.toUser.firstName)}`}
+              className={styles.avatar}
+              style={{
+                border: `2px solid #${stateSad || stateCold ? "C9C6D9" : linearGradientAccentColors[currentSlide]}`,
+                zIndex: 1,
+              }}
+            />
+            <img
+              src={
+                pet.fromUser.avatarUrl ||
+                getAvatarFallback(pet.fromUser.firstName)
+              }
+              alt={`Avatar ${sanitizeUtf16(pet.fromUser.firstName)}`}
+              className={styles.avatar}
+            />
+          </div>
         </div>
+
       </div>
 
       {stateCold && (
@@ -462,6 +487,40 @@ export const StreakPage = () => {
           </div>
         </div>
       )}
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div
+          onClick={(e) => e.stopPropagation()} className={styles.modalContent}>
+          <img
+            className={styles.modalImage}
+            src={streakPetSettingsImage}
+            alt="Серийчик"
+          />
+          <Typography className={styles.modalTitle} variant="displayXsSemibold">
+            Настройки серийчика
+          </Typography>
+          <div className={styles.modalItems}>
+            <div className={styles.modalItem}>
+              <div className={styles.modalItemText}>
+                <Typography variant="textMdMedium">Уведомления в чате</Typography>
+                <Typography variant="textMd">Отключение уведомлений в личных сообщениях</Typography>
+              </div>
+              <Switch
+                checked={pet.isBusinessNotificationAllowed}
+                onChange={(enabled) =>
+                  updateChatNotifications({
+                    chatId: pet.chatId,
+                    enabled,
+                  })
+                }
+                disabled={isUpdatingChatNotifications}
+                aria-label="Уведомления в чате"
+              />
+            </div>
+          </div>
+
+        </div>
+      </Modal>
     </div>
   );
 };
