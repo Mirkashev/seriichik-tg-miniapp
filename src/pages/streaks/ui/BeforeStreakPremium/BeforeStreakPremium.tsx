@@ -16,8 +16,9 @@ interface BeforeStreakPremiumProps {
 
 export const BeforeStreakPremium = ({
   onCopyBotUsername,
-  onVideoInstructions: _onVideoInstructions,
+  onVideoInstructions,
 }: BeforeStreakPremiumProps) => {
+  console.log(onVideoInstructions)
   useEffect(() => {
     trackAmplitude("onboarding_started");
   }, []);
@@ -103,10 +104,13 @@ export const BeforeStreakPremium = ({
           </div>
           <div className={styles.stepContent}>
             <Typography variant="textMdSemibold" className={styles.stepText}>
-              Напиши другу
+              Пригласить друга можно двумя способами:
             </Typography>
             <Typography variant="textMd" className={styles.stepDescription}>
-              После отправки сообщения другу ему придет сообщение от бизнес-бота с предложением растить серийчика вместе
+              1. Начните вводить @streakpet_bot в чате с другом. После пробела появится кнопка для отправки приглашения.
+            </Typography>
+            <Typography variant="textMd" className={styles.stepDescription}>
+              2. Нажмите оранжевую кнопку «Предложить серию» прямо в приложении. Так можно позвать сразу нескольких друзей!
             </Typography>
           </div>
         </div>

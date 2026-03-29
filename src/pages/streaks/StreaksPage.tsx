@@ -127,7 +127,7 @@ export const StreaksPage = () => {
   const handleInviteFriend = (text: string) => () => {
     // TODO: после появления запроса на получение данных юзера добавить 2 новые модалки
 
-    const botUrl = `https://t.me/${import.meta.env.VITE_BOT_NAME}`;
+    const botUrl = `https://t.me/${import.meta.env.VITE_BOT_NAME}?start=${user?.id}`;
 
     // TODO: проверить работу на винде, возможно там будет работать нативно
     const isDesktop =
