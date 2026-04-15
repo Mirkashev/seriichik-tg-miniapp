@@ -36,11 +36,11 @@ import StreakImgThird from '@/assets/images/badges/3.png'
 
 
 
-const text =
+const textPremium =
   "👋 Привет! Присоединяйся к Серийчик Боту!\n\nЯ помогу тебе отслеживать серии общения и развивать виртуального пета.";
 
 const textNoPremium =
-  "👋 Привет! У есть тебя премиум подписка? Давай вместе растить серийчика!";
+  "👋 Привет! У тебя есть подписка телеграм премиум? Давай вместе растить серийчика!";
 
 export const StreaksPage = () => {
   const navigate = useNavigate();
@@ -124,10 +124,12 @@ export const StreaksPage = () => {
     navigator.clipboard.writeText(import.meta.env.VITE_BOT_NAME);
   };
 
-  const handleInviteFriend = (text: string) => () => {
+  const handleInviteFriend = (isPremium: boolean) => () => {
+
+    const text = isPremium ? textPremium : textNoPremium;
     // TODO: после появления запроса на получение данных юзера добавить 2 новые модалки
 
-    const botUrl = `https://t.me/${import.meta.env.VITE_BOT_NAME}?start=${user?.id}`;
+    const botUrl = `https://t.me/${import.meta.env.VITE_BOT_NAME}${isPremium ? `?start=${user?.id}` : ""}`;
 
     // TODO: проверить работу на винде, возможно там будет работать нативно
     const isDesktop =
@@ -165,8 +167,8 @@ export const StreaksPage = () => {
     setSearch("");
   };
 
-  const handleVideoInstructions = () => {
-    // TODO: Implement video instructions
+  const handleRedirectToHowToConnect = () => {
+    navigate("/how-to-connect-business");
   };
 
   useEffect(() => {
@@ -235,7 +237,7 @@ export const StreaksPage = () => {
       if (userData?.isBotOwner) {
         return (
           <BeforeStreakPremiumConnected
-            onInviteFriend={handleInviteFriend(text)}
+            onInviteFriend={handleInviteFriend(isPremium)}
           />
         );
       }
@@ -243,14 +245,14 @@ export const StreaksPage = () => {
       return (
         <BeforeStreakPremium
           onCopyBotUsername={handleCopyBotUsername}
-          onVideoInstructions={handleVideoInstructions}
+          onVideoInstructions={handleRedirectToHowToConnect}
         />
       );
     }
 
     return (
       <BeforeStreakNoPremium
-        onInviteFriend={handleInviteFriend(textNoPremium)}
+        onInviteFriend={handleInviteFriend(!!isPremium)}
       />
     );
   }
@@ -302,7 +304,7 @@ export const StreaksPage = () => {
           </Typography>
           <Button
             className={styles.modalButton}
-            onClick={handleVideoInstructions}
+            onClick={handleRedirectToHowToConnect}
           >
             Как подключить?
           </Button>
@@ -328,7 +330,7 @@ export const StreaksPage = () => {
           </Typography>
           <Button
             className={styles.modalButton}
-            onClick={handleInviteFriend(textNoPremium)}
+            onClick={handleInviteFriend(!!isPremium)}
           >
             Позвать друга
           </Button>
@@ -516,7 +518,7 @@ export const StreaksPage = () => {
               ? handleOpenPremiumModal
               : !isPremium
                 ? handleOpenNoPremiumModal
-                : handleInviteFriend(isPremium ? text : textNoPremium)
+                : handleInviteFriend(isPremium)
           }
         >
           Предложить серию

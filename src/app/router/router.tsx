@@ -6,6 +6,9 @@ import { Loader } from "@/shared/ui/Loader";
 const StreaksPage = lazy(() => import("@/pages/streaks/StreaksPage").then((m) => ({ default: m.StreaksPage })));
 const StreakPage = lazy(() => import("@/pages/streak/StreakPage").then((m) => ({ default: m.StreakPage })));
 const TestPage = lazy(() => import("@/pages/test/TestPage").then((m) => ({ default: m.TestPage })));
+const HowToConnectBusiness = lazy(() =>
+  import("@/pages/how-to-connect-business/HowToConnectBusiness").then((m) => ({ default: m.HowToConnectBusiness }))
+);
 
 const PageFallback = (
   <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
@@ -48,6 +51,14 @@ export const router = createBrowserRouter(
           element: (
             <Suspense fallback={PageFallback}>
               <TestPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "how-to-connect-business",
+          element: (
+            <Suspense fallback={PageFallback}>
+              <HowToConnectBusiness />
             </Suspense>
           ),
         },

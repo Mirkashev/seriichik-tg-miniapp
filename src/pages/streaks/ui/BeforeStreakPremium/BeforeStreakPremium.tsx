@@ -18,7 +18,8 @@ export const BeforeStreakPremium = ({
   onCopyBotUsername,
   onVideoInstructions,
 }: BeforeStreakPremiumProps) => {
-  console.log(onVideoInstructions)
+  console.log(onVideoInstructions);
+
   useEffect(() => {
     trackAmplitude("onboarding_started");
   }, []);
