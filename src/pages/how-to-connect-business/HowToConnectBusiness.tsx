@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { BeforeStreakPremium } from "@/pages/streaks/ui/BeforeStreakPremium";
+import { ConnectBusinessGuide } from "@/features/connect-business-guide";
 import { useEffect } from "react";
 import { backButton } from "@tma.js/sdk-react";
 
@@ -8,10 +8,6 @@ export const HowToConnectBusiness = () => {
 
   const handleCopyBotUsername = () => {
     navigator.clipboard.writeText(import.meta.env.VITE_BOT_NAME);
-  };
-
-  const handleRedirectToHowToConnect = () => {
-    navigate("/how-to-connect-business");
   };
 
   useEffect(() => {
@@ -27,9 +23,6 @@ export const HowToConnectBusiness = () => {
   }, [navigate]);
 
   return (
-    <BeforeStreakPremium
-      onCopyBotUsername={handleCopyBotUsername}
-      onVideoInstructions={handleRedirectToHowToConnect}
-    />
+    <ConnectBusinessGuide onCopyBotUsername={handleCopyBotUsername} />
   );
 };

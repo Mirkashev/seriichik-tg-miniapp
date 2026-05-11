@@ -71,75 +71,6 @@
   margin: 0;
 }
 
-.stepButton {
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-}
-
-.stepButtonBlue {
-  background-color: var(--blue-50);
-}
-
-.stepButtonGray {
-  background-color: #2c2c2e;
-  color: var(--text-on);
-}
-
-.stepButtonContent {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.stepButtonIcon {
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stepButtonIconBlue {
-  background-color: var(--purple-900);
-  color: white;
-}
-
-.stepButtonIconGray {
-  background-color: var(--blue-900);
-  color: white;
-}
-
-.stepButtonText {
-  flex: 1;
-  text-align: left;
-}
-
-.stepButtonSubtext {
-  font-size: 12px;
-  margin-top: 2px;
-}
-
-.stepButtonGray .stepButtonSubtext {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.stepButtonGray .stepButtonArrow {
-  color: var(--text-on);
-}
-
-.stepButtonArrow {
-  color: var(--text-second);
-  font-size: 18px;
-}
-
 .botInput {
   background-color: var(--surface-default);
   border-radius: 8px;
@@ -156,8 +87,8 @@
 }
 
 .copyIcon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
   color: var(--text-second);
 }
@@ -167,11 +98,26 @@
   flex-direction: column;
   gap: 4px;
   margin-top: 20px;
+  position: sticky;
+  bottom: 20px;
 }
 
-.videoLink {
-  text-align: center;
-  color: var(--text-second);
+.videoInstructionLink {
+  display: block;
   text-decoration: none;
-  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.separator {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  color: #c8c8c8;
+
+  .separatorVisual {
+    height: 1px;
+    width: 100%;
+    border-bottom: 1px dotted #c8c8c8;
+  }
 }

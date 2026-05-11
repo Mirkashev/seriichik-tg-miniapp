@@ -1,0 +1,65 @@
+---
+description: Архитектура и структура проекта — Telegram Mini App
+globs:
+  - "src/**/*"
+alwaysApply: true
+---
+
+# Структура проекта
+
+Telegram Mini App на базе Vite + React 19 + TypeScript.
+
+## Архитектура — упрощённый FSD
+
+Используются 4 слоя (без features и widgets — проект небольшой):
+
+```
+src/
+├── app/          # Провайдеры, роутер, корневой layout
+├── pages/        # Экраны приложения (маршрутизируемые)
+├── entities/     # Доменные сущности (api, queries, model)
+├── shared/       # Переиспользуемое: UI-kit, API-клиент, утилиты, стили
+└── assets/       # Статика: иконки (SVG), изображения (PNG)
+```
+
+## Правила импортов
+
+- Алиас `@/` → `src/` (настроен в Vite и tsconfig)
+- Слой может импортировать только из нижестоящих слоёв:
+  - `app` → `pages`, `entities`, `shared`
+  - `pages` → `entities`, `shared`
+  - `entities` → `shared`
+  - `shared` — не импортирует из вышестоящих слоёв
+- Публичный API сущностей экспортируется через `index.ts`
+
+## Соглашения по слоям
+
+### `app/`
+- `providers/` — обёртки приложения (Query, Telegram SDK, Amplitude, StartParam)
+- `router/router.tsx` — `createBrowserRouter` с lazy-загрузкой страниц
+- `layout/RootLayout.tsx` — корневой layout
+
+### `pages/`
+- Каждая страница в отдельной папке: `pages/<name>/`
+- Локальные UI-компоненты страницы: `pages/<name>/ui/`
+- Страницы подключаются через `React.lazy` + `Suspense`
+
+### `entities/`
+- Структура сущности: `api.ts` (HTTP-запросы), `queries.ts` (React Query хуки), `model.ts` (типы), `index.ts` (публичный API)
+- Query-ключи создаются через фабрики (`userKeys`, `partnerKeys` и т.д.)
+
+### `shared/`
+- `api/` — `httpClient.ts` (Axios-инстанс), `queryClient.ts` (TanStack Query)
+- `ui/` — переиспользуемые компоненты с `*.module.scss`
+- `utils/hooks/` — кастомные хуки
+- `utils/helpers/` — утилитарные функции
+- `styles/` — глобальные SCSS стили, переменные, сброс
+- `consts/` — константы
+- `analytics/` — трекинг событий (Amplitude)
+
+## Стили
+
+- SCSS + CSS Modules (`*.module.scss`)
+- Глобальные стили: `shared/styles/index.scss`
+- Цветовые переменные: `shared/styles/colors.scss`
+- Tailwind / styled-components НЕ используются

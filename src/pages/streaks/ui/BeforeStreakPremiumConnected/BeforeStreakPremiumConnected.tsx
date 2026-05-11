@@ -5,13 +5,13 @@ import character from "@/assets/images/no-premium-pet.png";
 import { isMobile } from "react-device-detect";
 import HelpIcon from "@/assets/icons/question.svg?svgr";
 
-interface BeforeStreakNoPremiumProps {
+interface BeforeStreakPremiumConnectedProps {
   onInviteFriend: () => void;
 }
 
 export const BeforeStreakPremiumConnected = ({
   onInviteFriend,
-}: BeforeStreakNoPremiumProps) => {
+}: BeforeStreakPremiumConnectedProps) => {
   return (
     <div
       className={styles.page}

@@ -13,8 +13,6 @@ import { Typography } from "@/shared/ui/Typography";
 import { Loader } from "@/shared/ui/Loader";
 import { getAvatarFallback } from "@/shared/utils/helpers/telegramPhoto";
 import { sanitizeUtf16 } from "@/shared/utils/helpers/sanitizeUtf16";
-import { BeforeStreakPremium } from "./ui/BeforeStreakPremium";
-import { BeforeStreakNoPremium } from "./ui/BeforeStreakNoPremium";
 import { PartnerItem } from "./ui/PartnerItem";
 import HelpIcon from "@/assets/icons/question.svg?svgr";
 import styles from "./StreaksPage.module.scss";
@@ -28,6 +26,7 @@ import seriichikIncoming from "@/assets/images/seriichik-incoming.png";
 import { useMe, useUpdateTimezone } from "@/entities/user";
 import { BeforeStreakPremiumConnected } from "./ui/BeforeStreakPremiumConnected";
 import { useSearchPartners } from "@/entities/partner/queries";
+import { ConnectBusinessGuide } from "@/features/connect-business-guide";
 
 import StreakImgNoPet from '@/assets/images/badges/no-pet.png'
 import StreakImgFirst from '@/assets/images/badges/1.png'
@@ -39,9 +38,6 @@ import StreakImgThird from '@/assets/images/badges/3.png'
 const textPremium =
   "👋 Привет! Присоединяйся к Серийчик Боту!\n\nЯ помогу тебе отслеживать серии общения и развивать виртуального пета.";
 
-const textNoPremium =
-  "👋 Привет! У тебя есть подписка телеграм премиум? Давай вместе растить серийчика!";
-
 export const StreaksPage = () => {
   const navigate = useNavigate();
   const launchParams = useLaunchParams(true);
@@ -51,14 +47,10 @@ export const StreaksPage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-  const [isNoPremiumModalOpen, setIsNoPremiumModalOpen] = useState(false);
-
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
-
-  const isPremium = user?.isPremium;
 
   const {
     data,
@@ -124,12 +116,11 @@ export const StreaksPage = () => {
     navigator.clipboard.writeText(import.meta.env.VITE_BOT_NAME);
   };
 
-  const handleInviteFriend = (isPremium: boolean) => () => {
-
-    const text = isPremium ? textPremium : textNoPremium;
+  const handleInviteFriend = () => {
+    const text = textPremium;
     // TODO: после появления запроса на получение данных юзера добавить 2 новые модалки
 
-    const botUrl = `https://t.me/${import.meta.env.VITE_BOT_NAME}${isPremium ? `?start=${user?.id}` : ""}`;
+    const botUrl = `https://t.me/${import.meta.env.VITE_BOT_NAME}?start=${user?.id}`;
 
     // TODO: проверить работу на винде, возможно там будет работать нативно
     const isDesktop =
@@ -156,10 +147,6 @@ export const StreaksPage = () => {
 
   const handleOpenPremiumModal = () => {
     setIsPremiumModalOpen(true);
-  };
-
-  const handleOpenNoPremiumModal = () => {
-    setIsNoPremiumModalOpen(true);
   };
 
   const handleCloseSearchModal = () => {
@@ -233,28 +220,11 @@ export const StreaksPage = () => {
   }
 
   if (partners.length === 0) {
-    if (isPremium) {
-      if (userData?.isBotOwner) {
-        return (
-          <BeforeStreakPremiumConnected
-            onInviteFriend={handleInviteFriend(isPremium)}
-          />
-        );
-      }
-
-      return (
-        <BeforeStreakPremium
-          onCopyBotUsername={handleCopyBotUsername}
-          onVideoInstructions={handleRedirectToHowToConnect}
-        />
-      );
+    if (userData?.isBotOwner) {
+      return <BeforeStreakPremiumConnected onInviteFriend={handleInviteFriend} />;
     }
 
-    return (
-      <BeforeStreakNoPremium
-        onInviteFriend={handleInviteFriend(!!isPremium)}
-      />
-    );
+    return <ConnectBusinessGuide onCopyBotUsername={handleCopyBotUsername} />;
   }
 
   // Main state with partners list
@@ -307,32 +277,6 @@ export const StreaksPage = () => {
             onClick={handleRedirectToHowToConnect}
           >
             Как подключить?
-          </Button>
-        </div>
-      </Modal>
-
-      <Modal
-        isOpen={isNoPremiumModalOpen}
-        onClose={() => setIsNoPremiumModalOpen(false)}
-      >
-        <div className={styles.modalContent}>
-          <img
-            className={styles.modalImage}
-            src={seriichikIncoming}
-            alt="Премиум"
-          />
-          <Typography variant="displayXsSemibold">
-            Хочешь завести серийчика?
-          </Typography>
-          <Typography className={styles.modalText} variant="textMd">
-            Создавать серию можно с Premium. Попроси друга с подпиской создать
-            серийчика с тобой!
-          </Typography>
-          <Button
-            className={styles.modalButton}
-            onClick={handleInviteFriend(!!isPremium)}
-          >
-            Позвать друга
           </Button>
         </div>
       </Modal>
@@ -514,11 +458,9 @@ export const StreaksPage = () => {
       <div className={styles.bottomButton}>
         <Button
           onClick={
-            isPremium && !userData?.isBotOwner
+            !userData?.isBotOwner
               ? handleOpenPremiumModal
-              : !isPremium
-                ? handleOpenNoPremiumModal
-                : handleInviteFriend(isPremium)
+              : handleInviteFriend
           }
         >
           Предложить серию
